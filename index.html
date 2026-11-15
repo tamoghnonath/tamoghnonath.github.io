@@ -177,6 +177,13 @@ figure.diagram figcaption{font-size:.84rem;color:var(--muted);margin-top:6px;lin
 .tl h3{font-family:var(--font-display);font-size:1.25rem;font-weight:500;margin:2px 0 2px}
 .tl .where{color:var(--muted);font-size:.95rem;margin-bottom:6px}
 .tl .where .deg{color:var(--ink);font-weight:600}
+.lab{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:14px 18px}
+.lab-name{font-family:var(--font-display);font-size:1.15rem;font-weight:500}
+.lab-where{font-size:.9rem;color:var(--muted);margin-bottom:8px}
+.lab p{font-size:.95rem;margin-bottom:10px}
+.lab-k{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.tl .lab ul.mates{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.tl .lab ul.mates li{font-size:.88rem;border:1px solid var(--line);background:var(--bg);padding:3px 11px;border-radius:999px}
 .tl ul{margin:6px 0 0;padding-left:18px}
 .tl ul li{padding:0 0 3px;font-size:.95rem}
 
@@ -313,11 +320,11 @@ footer nav{display:flex;flex-wrap:wrap;gap:14px}
     <div>
       <h2>News</h2>
       <ul class="news">
-        <li><time>Dec 2026</time><div>Joining the Central Research Laboratory, Bharat Electronics Limited, Bangalore as Member Research Staff.</div></li>
+        <li><time>Dec 2026</time><div>Joining the <strong>Central Research Laboratory, Bharat Electronics Limited (BEL)</strong>, Bangalore as Member Research Staff.</div></li>
         <li><time>Dec 2026</time><div>Our invited paper on prefix-free ISI-aware character encoding at <strong>IEEE ANTS 2026</strong>.</div></li>
-        <li><time>Sep 2026</time><div>Paper on asymptotically optimal constrained codes published in the <em>IEEE Transactions on Communications</em>.</div></li>
+        <li><time>Sep 2026</time><div>Paper on asymptotically optimal constrained codes published in the <strong>IEEE Transactions on Communications</strong>.</div></li>
         <li><time>Jun 2026</time><div>Paper on sphere-averaged ISI presented at <strong>IEEE ISIT 2026</strong>, Guangzhou, with an ISIT student travel grant.</div></li>
-        <li><time>Jun 2026</time><div>Started as Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta.</div></li>
+        <li><time>Jun 2026</time><div>Started as Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta (<strong>InterDigital, USA</strong>).</div></li>
         <li><time>Feb 2026</time><div>Paper presented at <strong>NCC 2026</strong>, Hyderabad.</div></li>
       </ul>
     </div>
@@ -559,17 +566,32 @@ footer nav{display:flex;flex-wrap:wrap;gap:14px}
         <h3>Indian Institute of Technology Kanpur</h3>
         <div class="where"><strong class="deg">Joint M.Tech and Ph.D., Electrical Engineering</strong> · Supervisor: Prof. Adrish Banerjee</div>
         <ul>
-          <li>Cumulative Performance Index (CPI): 8.15 / 10</li>
           <li><strong>Ph.D. thesis:</strong> On designing ISI-reducing channel codes in a diffusion-based molecular communication system.</li>
           <li><strong>M.Tech thesis:</strong> On designing filtering algorithms in a cooperative MCvD system with adversaries.</li>
         </ul>
+        <div class="lab">
+          <div class="lab-name">DSP (Digital Signal Processing) Lab</div>
+          <div class="lab-where">ACES 305, Department of Electrical Engineering, IIT Kanpur</div>
+          <p>I did my M.Tech and Ph.D. research in the DSP Lab, under Prof. Adrish Banerjee.</p>
+          <div class="lab-k">Ph.D. lab mates</div>
+          <ul class="mates">
+            <li>Shubham Srivastava</li>
+            <li>Kalyan Paul</li>
+            <li>Tanmoy Chandra</li>
+          </ul>
+          <div class="lab-k" style="margin-top:12px">Postdoc lab mates</div>
+          <ul class="mates">
+            <li>Dr. Krishna Gopal Benerjee</li>
+            <li>Dr. Shibsankar Das</li>
+          </ul>
+        </div>
       </li>
       <li>
         <div class="when">2013 – 2017</div>
         <h3>National Institute of Technology Durgapur</h3>
         <div class="where"><strong class="deg">B.Tech, Electronics and Communication Engineering</strong></div>
         <ul>
-          <li>Cumulative Grade Point Average (CGPA): 9.07 / 10</li>
+          <li>I did my final year project under the supervision of Prof. Sanjay Dhar Roy <a href="#publications">[C9]</a>.</li>
         </ul>
       </li>
       <li>
@@ -621,9 +643,9 @@ footer nav{display:flex;flex-wrap:wrap;gap:14px}
   <div class="content">
     <div class="hobbies">
       <div class="hobby">
-        <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c3.5 3.4 5 7.4 5 12s-1.5 8.6-5 12M16 4c-3.5 3.4-5 7.4-5 12s1.5 8.6 5 12"/></svg>
+        <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path transform="rotate(45 16 16)" d="M16 2.5c1.2 0 2 1.3 2 3.2v7.3l10 6v3l-10-3.2v6l3 2.4v2.6l-5-1.4-5 1.4v-2.6l3-2.4v-6l-10 3.2v-3l10-6V5.7c0-1.9.8-3.2 2-3.2z"/></svg>
         <h3>Travelling</h3>
-        <p>I like to visit new places and see how people live there. Photos from my trips are below.</p>
+        <p>I like to visit new places and see how people live there.</p>
       </div>
       <div class="hobby">
         <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7c4-1.5 8-1.5 12 1v18c-4-2.5-8-2.5-12-1zM28 7c-4-1.5-8-1.5-12 1v18c4-2.5 8-2.5 12-1z"/></svg>
@@ -633,7 +655,7 @@ footer nav{display:flex;flex-wrap:wrap;gap:14px}
       <div class="hobby">
         <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 24V7l14-3v17"/><circle cx="8.5" cy="24" r="3.5"/><circle cx="22.5" cy="21" r="3.5"/></svg>
         <h3>Singing</h3>
-        <p>I love to sing.</p>
+        <p>I mostly listen to all types of music, though I have a special affection for Indian classical music. Unfortunately, I am a terrible singer!!</p>
       </div>
     </div>
 
