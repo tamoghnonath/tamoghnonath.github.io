@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: a quiet academic page. A sticky side label column for each section,
-   content on the right. Background: a faint bit lattice (a parity-check-like matrix)
-   in the margins; the hero shows a live diffusion channel carrying a zero-padded codeword. */
+/* Layout idea: a quiet academic site. Each menu item opens its own page (one view at a time).
+   Background: a faint bit lattice (like a sparse parity-check matrix) in the side margins;
+   the home page shows a live diffusion channel carrying a zero-padded codeword. */
 :root{
   --bg:#f4f6f7;
   --surface:#ffffff;
@@ -44,8 +44,7 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+html{scroll-padding-top:72px}
 body{
   margin:0;background:var(--bg);color:var(--ink);
   font-family:var(--font-body);font-size:16.5px;line-height:1.65;
@@ -63,6 +62,7 @@ a:hover{text-decoration-thickness:2px}
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;line-height:1.2;text-wrap:balance;margin:0}
 p{margin:0 0 .9em}
 .mono{font-family:var(--font-mono)}
+[hidden]{display:none !important}
 
 /* ---------- header ---------- */
 header.top{
@@ -71,20 +71,36 @@ header.top{
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);
 }
-header.top .wrap{display:flex;align-items:center;gap:24px;height:58px}
+header.top .wrap{display:flex;align-items:center;gap:20px;height:58px}
 .brand{font-family:var(--font-display);font-size:1.25rem;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap}
 .brand span{color:var(--signal)}
-nav.links{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+nav.links{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
 nav.links::-webkit-scrollbar{display:none}
 nav.links a{
-  color:var(--muted);text-decoration:none;font-size:.92rem;font-weight:500;
-  padding:6px 10px;border-radius:6px;white-space:nowrap;
+  color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;
+  padding:6px 9px;border-radius:6px;white-space:nowrap;
 }
 nav.links a:hover{color:var(--ink);background:var(--accent-soft)}
+nav.links a[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+
+/* ---------- page shell ---------- */
+.view{padding-bottom:56px}
+main{min-height:calc(100vh - 140px)}
+.page-head{padding:48px 0 28px;border-bottom:1px solid var(--line);margin-bottom:36px}
+.page-head .eyebrow{margin-bottom:10px}
+.page-head h1{font-size:clamp(2.1rem,4.2vw,3rem)}
+.page-head p{color:var(--muted);max-width:44em;margin:12px 0 0;font-size:1.04rem}
+.content{max-width:780px}
+.content h2{font-size:1.6rem;margin:40px 0 14px}
+.content h2:first-child{margin-top:0}
+.content h3{font-family:var(--font-body);font-size:1.02rem;font-weight:600;margin:24px 0 6px}
+.note{font-size:.9rem;color:var(--muted)}
+.sec-tag{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:5px;font-weight:400;letter-spacing:.02em}
+.eyebrow{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.06em;color:var(--accent);text-transform:uppercase}
 
 /* ---------- hero ---------- */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:44px;align-items:center;padding:56px 0 40px}
-.eyebrow{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:44px;align-items:center;padding:52px 0 40px}
+.hero .eyebrow{margin-bottom:14px}
 .hero h1{font-size:clamp(2.4rem,5vw,3.5rem);font-weight:500;letter-spacing:-.01em;margin-bottom:12px}
 .role{font-size:1.06rem;color:var(--muted);margin-bottom:18px}
 .role strong{color:var(--ink);font-weight:600}
@@ -99,25 +115,26 @@ nav.links a:hover{color:var(--ink);background:var(--accent-soft)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .btn.primary:hover{filter:brightness(1.08)}
 
-.sim{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px}
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px;margin:0}
 .sim canvas{display:block;width:100%;height:320px}
 .sim figcaption{font-size:.82rem;color:var(--muted);line-height:1.5;margin-top:8px}
 .sim figcaption b{color:var(--signal);font-family:var(--font-mono);font-weight:600}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.78rem;color:var(--muted);font-family:var(--font-mono);margin-top:6px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
 
-/* ---------- sections ---------- */
-section.block{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;padding:56px 0;border-top:1px solid var(--line)}
-.side{position:sticky;top:84px;align-self:start}
-.side .num{font-family:var(--font-mono);font-size:.78rem;color:var(--signal);letter-spacing:.05em}
-.side h2{font-size:1.85rem;margin-top:4px}
-.side .sub{font-size:.86rem;color:var(--muted);margin-top:8px;line-height:1.5}
-.content{max-width:720px}
-.content h3{font-size:1.45rem;margin:36px 0 12px}
-.content h3:first-child{margin-top:0}
-.content h4{font-family:var(--font-body);font-size:1rem;font-weight:600;margin:24px 0 6px}
-.content .note{font-size:.9rem;color:var(--muted)}
-.sec-tag{font-family:var(--font-mono);font-size:.74rem;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:4px;font-weight:400;letter-spacing:.02em}
+/* home: section tiles + news */
+.home-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:44px;border-top:1px solid var(--line);padding-top:40px}
+.home-grid h2{font-size:1.5rem;margin-bottom:16px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{display:block;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;transition:border-color .15s, transform .15s}
+.tile:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-1px)}
+.tile .tt{font-family:var(--font-display);font-size:1.18rem;font-weight:500;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tile .tt span{font-family:var(--font-mono);font-size:.8rem;color:var(--accent)}
+.tile .td{font-size:.88rem;color:var(--muted);margin-top:2px;line-height:1.5}
+@media (prefers-reduced-motion: reduce){.tile{transition:none}.tile:hover{transform:none}}
+.news{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.news li{display:grid;grid-template-columns:5.6em minmax(0,1fr);gap:12px;font-size:.95rem}
+.news time{font-family:var(--font-mono);font-size:.8rem;color:var(--accent);padding-top:2px;font-variant-numeric:tabular-nums}
 
 /* bit chips */
 .bits{display:inline-flex;gap:2px;font-family:var(--font-mono);font-size:.9rem;vertical-align:middle}
@@ -132,81 +149,99 @@ section.block{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;pa
 figure.diagram{margin:16px 0 22px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 10px;overflow-x:auto}
 figure.diagram svg{display:block;width:100%;min-width:480px;height:auto}
 figure.diagram figcaption{font-size:.84rem;color:var(--muted);margin-top:6px;line-height:1.5}
-
 .formula{font-family:var(--font-mono);font-size:.92rem;background:var(--accent-soft);padding:2px 7px;border-radius:4px;white-space:nowrap}
-
-/* news */
-.news{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-.news li{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:14px}
-.news time{font-family:var(--font-mono);font-size:.84rem;color:var(--accent);padding-top:2px;font-variant-numeric:tabular-nums}
-
-/* interests */
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
 .chips span{font-size:.86rem;border:1px solid var(--line);background:var(--surface);padding:4px 11px;border-radius:999px}
 
 /* publications */
+.pub-links{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
 .pubs{list-style:none;margin:0 0 8px;padding:0}
-.pubs li{display:grid;grid-template-columns:3.2em minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.pubs li{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
 .pubs li:last-child{border-bottom:0}
 .pubs .id{font-family:var(--font-mono);font-size:.82rem;color:var(--signal);padding-top:3px;font-weight:600}
 .pubs .t{font-weight:500}
+.pubs a.t{color:var(--ink);text-decoration-color:var(--accent)}
+.pubs a.t:hover{color:var(--accent)}
 .pubs .me{font-weight:600;color:var(--ink)}
 .pubs .venue{color:var(--muted);font-size:.93rem}
-.pubs em{font-style:italic}
-.badge{display:inline-block;font-family:var(--font-mono);font-size:.7rem;padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:2px;border:1px solid var(--signal);color:var(--signal)}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.68rem;padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:2px;border:1px solid var(--signal);color:var(--signal);white-space:nowrap}
 .badge.teal{border-color:var(--accent);color:var(--accent)}
 
-/* timeline (experience / education) */
-.tl{list-style:none;margin:0;padding:0;position:relative}
-.tl li{position:relative;padding:0 0 26px 26px;border-left:1px solid var(--line);margin-left:6px}
-.tl li:last-child{padding-bottom:4px}
-.tl li::before{content:"";position:absolute;left:-6px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
-.tl li.now::before{background:var(--signal);border-color:var(--signal)}
+/* timeline */
+.tl{list-style:none;margin:0;padding:0}
+.tl > li{position:relative;padding:0 0 26px 26px;border-left:1px solid var(--line);margin-left:6px}
+.tl > li:last-child{padding-bottom:4px}
+.tl > li::before{content:"";position:absolute;left:-6px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl > li.now::before{background:var(--signal);border-color:var(--signal)}
 .tl .when{font-family:var(--font-mono);font-size:.82rem;color:var(--accent);font-variant-numeric:tabular-nums}
-.tl h4{font-family:var(--font-display);font-size:1.22rem;font-weight:500;margin:2px 0 2px}
+.tl h3{font-family:var(--font-display);font-size:1.25rem;font-weight:500;margin:2px 0 2px}
 .tl .where{color:var(--muted);font-size:.95rem;margin-bottom:6px}
 .tl ul{margin:6px 0 0;padding-left:18px}
-.tl ul li{border:0;padding:0 0 3px;margin:0;font-size:.95rem}
-.tl ul li::before{display:none}
+.tl ul li{padding:0 0 3px;font-size:.95rem}
 
-/* honours */
-.honours{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.honours li{display:grid;grid-template-columns:4.6em minmax(0,1fr);gap:12px;align-items:baseline}
-.honours .yr{font-family:var(--font-mono);font-size:.84rem;color:var(--signal);font-variant-numeric:tabular-nums}
+/* plain lists */
+.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.list li{display:grid;grid-template-columns:6.2em minmax(0,1fr);gap:12px;align-items:baseline}
+.list .yr{font-family:var(--font-mono);font-size:.82rem;color:var(--signal);font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:11em minmax(0,1fr);gap:8px 16px;margin:0}
+.kv dt{font-weight:600}
+.kv dd{margin:0;color:var(--ink)}
+
+/* activities */
+.hobbies{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.hobby{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.hobby svg{width:30px;height:30px;display:block;margin-bottom:10px}
+.hobby h3{margin:0 0 4px;font-family:var(--font-display);font-size:1.2rem;font-weight:500}
+.hobby p{font-size:.93rem;color:var(--muted);margin:0}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px}
+.gallery figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.gallery img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.gallery figcaption{font-size:.84rem;color:var(--muted);padding:8px 12px}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--muted);font-size:.93rem;background:var(--surface)}
 
 /* biography */
+.bio-grid{display:grid;grid-template-columns:220px minmax(0,1fr);gap:32px;align-items:start}
+.portrait{margin:0}
+.portrait img{display:block;width:100%;max-width:220px;aspect-ratio:4/5;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.portrait figcaption{font-size:.82rem;color:var(--muted);margin-top:8px;line-height:1.45}
 .bio{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 26px}
-.bio p{font-size:1.03rem}
-.bio-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
-.bio-head h4{margin:0}
+.bio p{font-size:1.02rem}
+.bio p:last-child{margin-bottom:0}
+.bio-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.bio-head h2{margin:0;font-size:1.35rem}
 .copy{font-size:.82rem;padding:5px 11px}
 .copied{font-size:.8rem;color:var(--accent);margin-left:8px}
 
 /* contact */
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.contact-grid div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.contact-grid > div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
 .contact-grid .k{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .contact-grid .v{margin-top:4px;word-break:break-word}
 
-footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:26px 0 40px;font-size:.84rem;color:var(--muted)}
+footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:24px 0 36px;font-size:.84rem;color:var(--muted)}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+footer nav{display:flex;flex-wrap:wrap;gap:14px}
 
 /* ---------- responsive ---------- */
 @media (max-width: 900px){
   .hero{grid-template-columns:minmax(0,1fr);gap:28px;padding-top:36px}
-  section.block{grid-template-columns:minmax(0,1fr);gap:16px;padding:42px 0}
-  .side{position:static}
-  .side h2{font-size:1.65rem}
+  .home-grid{grid-template-columns:minmax(0,1fr);gap:32px}
+  .hobbies{grid-template-columns:minmax(0,1fr)}
 }
-@media (max-width: 560px){
+@media (max-width: 640px){
   .wrap{padding:0 16px}
-  header.top .wrap{gap:12px}
-  .brand{font-size:1.1rem}
+  header.top .wrap{gap:10px}
+  .brand{font-size:1.08rem}
   .sim canvas{height:280px}
-  .news li{grid-template-columns:1fr;gap:0}
-  .honours li{grid-template-columns:1fr;gap:0}
+  .tiles{grid-template-columns:minmax(0,1fr)}
+  .news li,.list li{grid-template-columns:minmax(0,1fr);gap:0}
+  .kv{grid-template-columns:minmax(0,1fr);gap:0}
+  .kv dd{margin-bottom:8px}
+  .bio-grid{grid-template-columns:minmax(0,1fr);gap:18px}
+  .portrait img{max-width:180px}
   .bio{padding:18px}
   .codebox .lbl{min-width:0;width:100%}
+  .page-head{padding-top:32px}
 }
 </style>
 </head>
@@ -216,38 +251,40 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#home">Tamoghno Nath<span>.</span></a>
-    <nav class="links" aria-label="Sections">
+    <nav class="links" aria-label="Pages">
       <a href="#research">Research</a>
       <a href="#publications">Publications</a>
       <a href="#experience">Experience</a>
       <a href="#education">Education</a>
-      <a href="#honours">Honours</a>
+      <a href="#achievements">Achievements</a>
+      <a href="#activities">Beyond research</a>
       <a href="#biography">Biography</a>
       <a href="#contact">Contact</a>
     </nav>
   </div>
 </header>
 
-<main class="wrap" id="home">
+<main class="wrap">
 
-  <!-- ===================== HERO ===================== -->
+<!-- ===================================================== HOME -->
+<section class="view" id="view-home" data-title="Tamoghno Nath">
   <div class="hero">
     <div>
       <div class="eyebrow">Molecular communication · Coding theory · Wireless</div>
       <h1>Tamoghno Nath</h1>
       <p class="role"><strong>Member Research Staff</strong><br>Central Research Laboratory (CRL), Bharat Electronics Limited, Bangalore</p>
-      <p class="lede">I design channel codes for molecular communication, where molecules carry the bits and the channel has a long memory. I also work on probabilistic constellation shaping and MIMO precoding for wireless systems. I did my M.Tech and Ph.D. in Electrical Engineering at IIT Kanpur.</p>
+      <p class="lede">I design channel codes for molecular communication, where molecules carry the bits and the channel has a long memory. I have also worked on probabilistic constellation shaping for wireless systems. I did my joint M.Tech and Ph.D. in Electrical Engineering at IIT Kanpur, and my B.Tech at NIT Durgapur.</p>
       <div class="actions">
         <a class="btn primary" href="#publications">Publications</a>
         <a class="btn" href="#research">Research</a>
-        <!-- To add a CV download: put cv.pdf next to this file and remove the comment marks below.
+        <!-- To add a CV download: upload your CV to GitHub as cv.pdf and remove the comment marks below.
         <a class="btn" href="cv.pdf">Download CV</a>
         -->
         <a class="btn" href="#contact">Contact</a>
       </div>
     </div>
 
-    <figure class="sim" style="margin:0">
+    <figure class="sim">
       <canvas id="mc-canvas" role="img" aria-label="Animation of a diffusion channel. A transmitter releases molecules for every bit-1 of a zero-padded codeword. The molecules diffuse to a receiver, and the bar chart shows how many molecules arrive in each bit interval, including late arrivals that cause inter-symbol interference."></canvas>
       <div class="legend">
         <span><i style="background:var(--signal)"></i>bit-1 (release)</span>
@@ -258,305 +295,414 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
     </figure>
   </div>
 
-  <!-- ===================== NEWS ===================== -->
-  <section class="block" id="news" aria-labelledby="news-h">
-    <div class="side">
-      <div class="num">00</div>
-      <h2 id="news-h">News</h2>
+  <div class="home-grid">
+    <div>
+      <h2>Explore</h2>
+      <div class="tiles">
+        <a class="tile" href="#research"><div class="tt">Research</div><div class="td">Molecular communication, ISI-aware codes, adversarial relays, constellation shaping.</div></a>
+        <a class="tile" href="#publications"><div class="tt">Publications <span>4 J · 9 C</span></div><div class="td">IEEE TCOM, IEEE TMBMC, ISIT, WCNC, NCC, SPCOM.</div></a>
+        <a class="tile" href="#experience"><div class="tt">Experience</div><div class="td">CRL BEL, IIT Kanpur, teaching assistantships, service.</div></a>
+        <a class="tile" href="#education"><div class="tt">Education</div><div class="td">M.Tech and Ph.D., IIT Kanpur. B.Tech, NIT Durgapur.</div></a>
+        <a class="tile" href="#achievements"><div class="tt">Achievements</div><div class="td">Travel grants, competition finalist, most viewed papers.</div></a>
+        <a class="tile" href="#activities"><div class="tt">Beyond research</div><div class="td">Travelling, reading storybooks and singing.</div></a>
+        <a class="tile" href="#biography"><div class="tt">Biography</div><div class="td">A short profile with photo, for talks and events.</div></a>
+        <a class="tile" href="#contact"><div class="tt">Contact</div><div class="td">Email, Google Scholar, ORCID, LinkedIn.</div></a>
+      </div>
     </div>
-    <div class="content">
+    <div>
+      <h2>News</h2>
       <ul class="news">
-        <li><time>Dec 2026</time><div>Our invited paper on prefix-free ISI-aware character encoding will be presented at <strong>IEEE ANTS 2026</strong>, IIT Roorkee.</div></li>
-        <li><time>2026</time><div>Joined the <strong>Central Research Laboratory, Bharat Electronics Limited</strong>, Bangalore as Member Research Staff.</div></li>
-        <li><time>Jun 2026</time><div>Started as Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta, on constellation shaping and MIMO precoding.</div></li>
-        <li><time>Feb 2026</time><div>Paper on ISI-aware selective variable-length coding presented at <strong>NCC 2026</strong>.</div></li>
-        <li><time>Dec 2025</time><div>“ISI-aware code design: A linear approach toward reliable molecular communication” published in <em>IEEE TMBMC</em>.</div></li>
-        <li><time>Jun 2025</time><div>Paper on (α, β)-constrained high-rate codes presented at <strong>IEEE ISIT 2025</strong>.</div></li>
+        <li><time>Dec 2026</time><div>Joining the Central Research Laboratory, Bharat Electronics Limited, Bangalore as Member Research Staff.</div></li>
+        <li><time>Dec 2026</time><div>Our invited paper on prefix-free ISI-aware character encoding at <strong>IEEE ANTS 2026</strong>.</div></li>
+        <li><time>Sep 2026</time><div>Paper on asymptotically optimal constrained codes published in the <em>IEEE Transactions on Communications</em>.</div></li>
+        <li><time>Jun 2026</time><div>Paper on sphere-averaged ISI presented at <strong>IEEE ISIT 2026</strong>, Guangzhou, with an ISIT student travel grant.</div></li>
+        <li><time>Jun 2026</time><div>Started as Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta.</div></li>
+        <li><time>Feb 2026</time><div>Paper presented at <strong>NCC 2026</strong>, Hyderabad.</div></li>
       </ul>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===================== RESEARCH ===================== -->
-  <section class="block" id="research" aria-labelledby="research-h">
-    <div class="side">
-      <div class="num">01</div>
-      <h2 id="research-h">Research</h2>
-      <p class="sub">Molecular communication, ISI-aware coding, adversarial nodes, constellation shaping.</p>
+<!-- ===================================================== RESEARCH -->
+<section class="view" id="view-research" data-title="Research" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Research</div>
+    <h1>Codes for a channel with long memory</h1>
+    <p>My Ph.D. and M.Tech work is on molecular communication via diffusion. I have also worked on constellation shaping for wireless systems.</p>
+  </div>
+  <div class="content">
+    <div class="chips" aria-label="Research interests">
+      <span>Molecular communication</span><span>Error-control coding</span><span>Inter-symbol interference</span><span>Constrained codes</span><span>Probabilistic constellation shaping</span>
     </div>
-    <div class="content">
-      <div class="chips" aria-label="Research interests">
-        <span>Molecular communication</span><span>Error-control coding</span><span>Inter-symbol interference</span><span>Run-length-limited codes</span><span>Probabilistic constellation shaping</span><span>MIMO precoding</span>
-      </div>
 
-      <h3>Molecular communication in brief</h3>
-      <p>In molecular communication (MC), molecules carry the information in place of electromagnetic waves. A transmitter releases molecules into a fluid. The molecules move by diffusion, and a receiver counts the molecules that reach it. This suits very small devices such as nanomachines inside the body, where radio antennas do not work well. Possible applications are targeted drug delivery, health monitoring inside the body and lab-on-chip systems.</p>
-      <p>In my work, I consider molecular communication via diffusion (MCvD) with on–off keying. The transmitter releases a fixed number of molecules for bit-1 and releases nothing for bit-0. The receiver compares the count in each bit interval with a threshold.</p>
+    <h2>Molecular communication in brief</h2>
+    <p>In molecular communication (MC), molecules carry the information in place of electromagnetic waves. A transmitter releases molecules into a fluid. The molecules move by diffusion, and a receiver counts the molecules that reach it. This suits very small devices such as nanomachines inside the body, where radio antennas do not work well. Possible applications are targeted drug delivery, health monitoring inside the body and lab-on-chip systems.</p>
+    <p>In my work, I consider molecular communication via diffusion (MCvD) with on–off keying. The transmitter releases a fixed number of molecules for bit-1 and releases nothing for bit-0. The receiver compares the count in each bit interval with a threshold.</p>
 
-      <h3>The ISI problem</h3>
-      <p>Diffusion is slow and random. Only a part of the molecules released in one bit interval reach the receiver in the same interval. The rest arrive in the next few intervals and add to their counts. This is inter-symbol interference (ISI). The channel response has a long tail, as shown below. So, when two bit-1s are sent close together, the second one sees a large extra count, and a bit-0 after a bit-1 can be read as bit-1.</p>
-      <figure class="diagram">
-        <svg id="cir" viewBox="0 0 640 230" role="img" aria-label="Channel impulse response of a diffusion channel over five bit intervals. Most of the response falls in the first interval, and a long tail spreads into the next four intervals, which causes ISI."></svg>
-        <figcaption>Response of a diffusion channel to one release at <span class="mono">t = 0</span>, for five bit intervals of length <span class="mono">T</span>. The tail after the first interval is the ISI seen by the next bits.</figcaption>
-      </figure>
-      <p>Equalisers used in radio receivers are often too complex for a nanomachine. So I look for simple codes that avoid harmful bit patterns at the transmitter itself.</p>
+    <h2>The ISI problem</h2>
+    <p>Diffusion is slow and random. Only a part of the molecules released in one bit interval reach the receiver in the same interval. The rest arrive in the next few intervals and add to their counts. This is inter-symbol interference (ISI). The channel response has a long tail, as shown below. So, when two bit-1s are sent close together, the second one sees a large extra count, and a bit-0 after a bit-1 can be read as bit-1.</p>
+    <figure class="diagram">
+      <svg id="cir" viewBox="0 0 640 230" role="img" aria-label="Channel impulse response of a diffusion channel over five bit intervals. Most of the response falls in the first interval, and a long tail spreads into the next four intervals, which causes ISI."></svg>
+      <figcaption>Response of a diffusion channel to one release at <span class="mono">t = 0</span>, for five bit intervals of length <span class="mono">T</span>. The tail after the first interval is the ISI seen by the next bits.</figcaption>
+    </figure>
+    <p>Equalisers used in radio receivers are often too complex for a nanomachine. So I look for simple codes that avoid harmful bit patterns at the transmitter itself.</p>
 
-      <h3>Coding against ISI <span class="sec-tag">Ph.D.</span></h3>
-      <p>A channel code adds controlled redundancy to the data. The minimum Hamming distance <span class="formula">d<sub>min</sub></span> between codewords decides how many bit errors the code can correct: <span class="formula">t = ⌊(d<sub>min</sub> − 1)/2⌋</span>. In MC, a good code must also control <em>where</em> the 1s appear, because the channel has memory. So the design has two goals at the same time: distance against noise, and spacing of 1s against ISI.</p>
+    <h2>Coding against ISI <span class="sec-tag">Ph.D.</span></h2>
+    <p>A channel code adds controlled redundancy to the data. The minimum Hamming distance <span class="formula">d<sub>min</sub></span> between codewords decides how many bit errors the code can correct: <span class="formula">t = ⌊(d<sub>min</sub> − 1)/2⌋</span>. In MC, a good code must also control <em>where</em> the 1s appear, because the channel has memory. So the design has two goals at the same time: distance against noise, and spacing of 1s against ISI.</p>
+    <p class="note">Ph.D. thesis: “On designing ISI-reducing channel codes in a diffusion-based molecular communication system.”</p>
 
-      <h4>Zero-padding and run-length constraints</h4>
-      <p>A simple idea is to place zeros after every 1. A binary sequence satisfies the <span class="formula">(d, ∞)</span> run-length-limited (RLL) constraint when every 1 is followed by at least <span class="formula">d</span> zeros. The molecules from a bit-1 then get time to clear before the next bit-1 is sent. We call such codes zero-padding (ZP) codes.</p>
-      <div class="codebox">
-        <div class="row"><span class="lbl">Uncoded data</span>
-          <span class="bits"><b class="one">1</b><b class="one">1</b><b>0</b><b class="one">1</b><b class="one">1</b><b class="one">1</b></span>
-          <span>1s back to back: high ISI</span></div>
-        <div class="row"><span class="lbl">ZP sequence, d = 2</span>
-          <span class="bits"><b class="one">1</b><b>0</b><b>0</b><i class="gap"></i><b class="one">1</b><b>0</b><b>0</b><b>0</b><i class="gap"></i><b class="one">1</b><b>0</b><b>0</b></span>
-          <span>every 1 has two 0s after it</span></div>
-      </div>
+    <h3>Zero-padding and run-length constraints</h3>
+    <p>A simple idea is to place zeros after every 1. A binary sequence satisfies the <span class="formula">(d, ∞)</span> run-length-limited (RLL) constraint when every 1 is followed by at least <span class="formula">d</span> zeros. The molecules from a bit-1 then get time to clear before the next bit-1 is sent. We call such codes zero-padding (ZP) codes.</p>
+    <div class="codebox">
+      <div class="row"><span class="lbl">Uncoded data</span>
+        <span class="bits"><b class="one">1</b><b class="one">1</b><b>0</b><b class="one">1</b><b class="one">1</b><b class="one">1</b></span>
+        <span>1s back to back: high ISI</span></div>
+      <div class="row"><span class="lbl">ZP sequence, d = 2</span>
+        <span class="bits"><b class="one">1</b><b>0</b><b>0</b><i class="gap"></i><b class="one">1</b><b>0</b><b>0</b><b>0</b><i class="gap"></i><b class="one">1</b><b>0</b><b>0</b></span>
+        <span>every 1 has two 0s after it</span></div>
+    </div>
 
-      <h4>ISI-reducing error-correcting codes</h4>
-      <p>Zero-padding lowers the ISI, but it does not correct errors due to noise. We designed codes that keep the ZP structure and also correct a single bit error <a href="#j1">[J1]</a>. After that, we gave a linear approach to ISI-aware code design <a href="#j2">[J2]</a> and a family of high-rate codes under (α, β) constraints <a href="#c4">[C4]</a>. Earlier, we studied how the distribution of the transmitted sequence changes the ISI <a href="#c1">[C1]</a>, and proposed ISI-reducing channel codes for MCvD <a href="#c3">[C3]</a>.</p>
+    <h3>ISI-reducing error-correcting codes</h3>
+    <p>Zero-padding lowers the ISI, but it does not correct errors due to noise. We first studied how the distribution of the transmitted sequence changes the ISI <a href="#publications">[C8]</a> and proposed ISI-reducing channel codes for MCvD <a href="#publications">[C7]</a>. Then we designed codes that keep the ZP structure and also correct a single bit error <a href="#publications">[J3]</a>. After that, we gave a linear approach to ISI-aware code design <a href="#publications">[J2]</a>, a family of high-rate codes under (α, β) constraints <a href="#publications">[C4]</a>, and an analysis of the sphere-averaged ISI of single error-correcting codes <a href="#publications">[C2]</a>. Finally, we designed asymptotically optimal constrained codes that handle ISI and errors jointly <a href="#publications">[J1]</a>. We also proposed a hybrid symbol time interval to lower the ISI <a href="#publications">[C5]</a>.</p>
 
-      <h4>Variable-length character encoding</h4>
-      <p>When text is sent, letters do not occur with equal probability. Huffman codes give short codewords to common letters, but they do not correct errors and they do not keep the 1s apart. We designed prefix-free, variable-length codes that keep the ZP constraint, and a version with free distance 3 that corrects a single bit error. A two-stage decoder first does guaranteed single-error correction and then uses prefix-guided backtracking to recover more patterns <a href="#c6">[C6]</a>. A related scheme selects variable-length codewords for a channel with refresh <a href="#c5">[C5]</a>.</p>
+    <h3>Variable-length character encoding</h3>
+    <p>When text is sent, letters do not occur with equal probability. Huffman codes give short codewords to common letters, but they do not correct errors and they do not keep the 1s apart. We designed prefix-free, variable-length codes that keep the ZP constraint, and a version with free distance 3 that corrects a single bit error. A two-stage decoder first does guaranteed single-error correction and then uses prefix-guided backtracking to recover more patterns <a href="#publications">[C1]</a>. A related scheme selects variable-length codewords for a channel with refresh <a href="#publications">[C3]</a>.</p>
 
-      <h3>Adversarial nodes in cooperative networks <span class="sec-tag">M.Tech</span></h3>
-      <p>In a cooperative MCvD network, several relay nanomachines detect the transmitted bit and report to a fusion centre (FC). The FC combines the reports with an <span class="formula">F</span>-out-of-<span class="formula">N</span> rule. The OR, AND and majority rules are special cases. Some relays can be faulty or adversarial. They may almost always report bit-1, almost never report bit-1, or behave somewhere in between.</p>
-      <figure class="diagram">
-        <svg viewBox="0 0 640 238" role="img" aria-label="Cooperative network: one transmitter sends to five relays. Two relays are adversarial. All relays report to a fusion centre, which filters extreme values and then applies an F-out-of-N rule.">
-          <g font-family="JetBrains Mono, monospace" font-size="12">
-            <!-- links Tx -> relays -->
-            <g stroke="var(--line)" stroke-width="1.5">
-              <line x1="78" y1="110" x2="270" y2="34"/><line x1="78" y1="110" x2="270" y2="72"/>
-              <line x1="78" y1="110" x2="270" y2="110"/><line x1="78" y1="110" x2="270" y2="148"/>
-              <line x1="78" y1="110" x2="270" y2="186"/>
-            </g>
-            <g stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 4">
-              <line x1="290" y1="34" x2="470" y2="110"/><line x1="290" y1="110" x2="470" y2="110"/>
-              <line x1="290" y1="186" x2="470" y2="110"/>
-            </g>
-            <g stroke="var(--signal)" stroke-width="1.5" stroke-dasharray="4 4">
-              <line x1="290" y1="72" x2="470" y2="110"/><line x1="290" y1="148" x2="470" y2="110"/>
-            </g>
-            <!-- Tx -->
-            <circle cx="62" cy="110" r="22" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="2"/>
-            <text x="62" y="114" text-anchor="middle" fill="var(--ink)">Tx</text>
-            <!-- relays -->
-            <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2">
-              <circle cx="280" cy="34" r="12"/><circle cx="280" cy="110" r="12"/><circle cx="280" cy="186" r="12"/>
-            </g>
-            <g fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="2">
-              <rect x="268" y="60" width="24" height="24" rx="3"/><rect x="268" y="136" width="24" height="24" rx="3"/>
-            </g>
-            <circle cx="40" cy="224" r="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-            <text x="52" y="228" fill="var(--muted)" font-size="11">healthy relay</text>
-            <rect x="160" y="218" width="12" height="12" rx="2" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="1.5"/>
-            <text x="180" y="228" fill="var(--muted)" font-size="11">adversarial relay</text>
-            <!-- FC -->
-            <rect x="470" y="78" width="140" height="64" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
-            <text x="540" y="102" text-anchor="middle" fill="var(--ink)" font-weight="600">Fusion centre</text>
-            <text x="540" y="120" text-anchor="middle" fill="var(--muted)" font-size="11">filter, then</text>
-            <text x="540" y="134" text-anchor="middle" fill="var(--muted)" font-size="11">F-out-of-N rule</text>
+    <h2>Adversarial nodes in cooperative networks <span class="sec-tag">M.Tech</span></h2>
+    <p>In a cooperative MCvD network, several relay nanomachines detect the transmitted bit and report to a fusion centre (FC). The FC combines the reports with an <span class="formula">F</span>-out-of-<span class="formula">N</span> rule. The OR, AND and majority rules are special cases. Some relays can be faulty or adversarial. They may almost always report bit-1, almost never report bit-1, or behave somewhere in between.</p>
+    <figure class="diagram">
+      <svg viewBox="0 0 640 238" role="img" aria-label="Cooperative network: one transmitter sends to five relays. Two relays are adversarial. All relays report to a fusion centre, which filters extreme values and then applies an F-out-of-N rule.">
+        <g font-family="JetBrains Mono, monospace" font-size="12">
+          <g stroke="var(--line)" stroke-width="1.5">
+            <line x1="78" y1="110" x2="270" y2="34"/><line x1="78" y1="110" x2="270" y2="72"/>
+            <line x1="78" y1="110" x2="270" y2="110"/><line x1="78" y1="110" x2="270" y2="148"/>
+            <line x1="78" y1="110" x2="270" y2="186"/>
           </g>
-        </svg>
-        <figcaption>A transmitter, five relays (two adversarial) and a fusion centre. The FC removes extreme reports before it applies the fusion rule.</figcaption>
+          <g stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 4">
+            <line x1="290" y1="34" x2="470" y2="110"/><line x1="290" y1="110" x2="470" y2="110"/>
+            <line x1="290" y1="186" x2="470" y2="110"/>
+          </g>
+          <g stroke="var(--signal)" stroke-width="1.5" stroke-dasharray="4 4">
+            <line x1="290" y1="72" x2="470" y2="110"/><line x1="290" y1="148" x2="470" y2="110"/>
+          </g>
+          <circle cx="62" cy="110" r="22" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="2"/>
+          <text x="62" y="114" text-anchor="middle" fill="var(--ink)">Tx</text>
+          <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2">
+            <circle cx="280" cy="34" r="12"/><circle cx="280" cy="110" r="12"/><circle cx="280" cy="186" r="12"/>
+          </g>
+          <g fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="2">
+            <rect x="268" y="60" width="24" height="24" rx="3"/><rect x="268" y="136" width="24" height="24" rx="3"/>
+          </g>
+          <rect x="470" y="78" width="140" height="64" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="540" y="102" text-anchor="middle" fill="var(--ink)" font-weight="600">Fusion centre</text>
+          <text x="540" y="120" text-anchor="middle" fill="var(--muted)" font-size="11">filter, then</text>
+          <text x="540" y="134" text-anchor="middle" fill="var(--muted)" font-size="11">F-out-of-N rule</text>
+          <circle cx="40" cy="224" r="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="52" y="228" fill="var(--muted)" font-size="11">healthy relay</text>
+          <rect x="160" y="218" width="12" height="12" rx="2" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="1.5"/>
+          <text x="180" y="228" fill="var(--muted)" font-size="11">adversarial relay</text>
+        </g>
+      </svg>
+      <figcaption>A transmitter, five relays (two adversarial) and a fusion centre. The FC removes extreme reports before it applies the fusion rule.</figcaption>
+    </figure>
+    <p>In my M.Tech thesis, I studied the effect of such relays on the bit error rate (BER) and designed filtering algorithms at the FC. The algorithms remove the lower and the upper extreme values in every interval before fusion, and they do not need pilot symbols <a href="#publications">[C6]</a>, <a href="#publications">[J4]</a>.</p>
+    <p class="note">M.Tech thesis: “On designing filtering algorithms in a cooperative MCvD system with adversaries.”</p>
+
+    <h2>Constellation shaping <span class="sec-tag">Wireless</span></h2>
+    <p>In probabilistic constellation shaping (PCS), low-energy symbols are sent more often than high-energy symbols. This brings the rate closer to the channel capacity at the same average power. The Maxwell–Boltzmann distribution is the usual choice. I studied the optimal symbol distribution for ASK constellations and where it differs from Maxwell–Boltzmann. I also worked on shaping and power allocation for MIMO channels and on hybrid probabilistic and geometric shaping.</p>
+    <p class="note">This was part of a joint research project between IIT Kanpur and InterDigital, USA (Oct 2025 – Nov 2026).</p>
+  </div>
+</section>
+
+<!-- ===================================================== PUBLICATIONS -->
+<section class="view" id="view-publications" data-title="Publications" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Publications</div>
+    <h1>Papers</h1>
+    <p>4 journal papers (1 under revision) and 9 conference papers. Click a title to open it on IEEE Xplore.</p>
+  </div>
+  <div class="content">
+    <div class="pub-links">
+      <a class="btn" href="https://scholar.google.com/citations?user=LWbXZE8AAAAJ&amp;hl=en">Google Scholar</a>
+      <a class="btn" href="https://orcid.org/0000-0002-0710-4940">ORCID</a>
+    </div>
+
+    <h2>Journal papers</h2>
+    <ol class="pubs">
+      <li><span class="id">J1</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/11692948">On asymptotic optimal constrained codes for joint ISI-mitigation and error correction in diffusion-based molecular communication</a>,”
+        <span class="venue"><em>IEEE Transactions on Communications</em>, vol. 74, pp. 14182–14198, Sep. 2026.</span></div></li>
+      <li><span class="id">J2</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/11052840">ISI-aware code design: A linear approach towards reliable molecular communication</a>,”
+        <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, vol. 11, no. 4, pp. 549–571, Dec. 2025.</span></div></li>
+      <li><span class="id">J3</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/10896763">On designing novel ISI-reducing single error correcting codes in an MCvD system</a>,”
+        <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, vol. 11, no. 2, pp. 228–233, Feb. 2025.</span><span class="badge teal">Most viewed</span></div></li>
+      <li><span class="id">J4</span><div>
+        <span class="me">T. Nath</span> and A. Banerjee,
+        “<span class="t">On modelling and mitigating adversarial impacts in a cooperative molecular communication via diffusion network</span>,”
+        <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, 2026.</span><span class="badge">Under revision</span></div></li>
+    </ol>
+
+    <h2>Conference papers</h2>
+    <ol class="pubs">
+      <li><span class="id">C1</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<span class="t">Designing prefix-free ISI-aware character encoding for diffusion-based molecular communication</span>,”
+        <span class="venue">accepted in <em>IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, 2026.</span><span class="badge">Invited paper</span></div></li>
+      <li><span class="id">C2</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/11653743">On sphere-averaged ISI for single error-correcting codes in molecular communication</a>,”
+        <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, Guangzhou, China, Jun. 2026, pp. 1–6.</span></div></li>
+      <li><span class="id">C3</span><div>
+        <span class="me">T. Nath</span> and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/11478912">ISI-aware selective variable-length coding for diffusion-based molecular communication channel with refresh</a>,”
+        <span class="venue">in <em>Proc. National Conference on Communications (NCC)</em>, Hyderabad, Feb. 2026, pp. 1–6.</span></div></li>
+      <li><span class="id">C4</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/11195576">Improved performance with α, β-constrained transmission: A family of high-rate codes 𝒞<sup>(n)</sup><sub>α,β</sub> for molecular communication via diffusion</a>,”
+        <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, Ann Arbor, MI, USA, Jun. 2025, pp. 1–6.</span><span class="badge teal">Most viewed</span></div></li>
+      <li><span class="id">C5</span><div>
+        <span class="me">T. Nath</span> and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/10982960">A novel approach to ISI mitigation in diffusion-based molecular communication: Optimizing hybrid symbol time interval</a>,”
+        <span class="venue">in <em>Proc. National Conference on Communications (NCC)</em>, New Delhi, Mar. 2025, pp. 1–6.</span></div></li>
+      <li><span class="id">C6</span><div>
+        <span class="me">T. Nath</span> and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/10118904">On effect of adversaries in a cooperative MCvD network and filtering mechanism</a>,”
+        <span class="venue">in <em>Proc. IEEE Wireless Communications and Networking Conference (WCNC)</em>, Glasgow, UK, Mar. 2023, pp. 1–6.</span></div></li>
+      <li><span class="id">C7</span><div>
+        <span class="me">T. Nath</span> and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/10207011">On novel ISI-reducing channel codes for molecular communication via diffusion</a>,”
+        <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, Taipei, Taiwan, Jun. 2023, pp. 642–647.</span><span class="badge teal">Most viewed</span></div></li>
+      <li><span class="id">C8</span><div>
+        <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/9840783">On effect of different sequence distributions on ISI in an MCvD system</a>,”
+        <span class="venue">in <em>Proc. IEEE International Conference on Signal Processing and Communications (SPCOM)</em>, Bangalore, Jul. 2022, pp. 1–5.</span><span class="badge">Best student paper finalist</span><span class="badge teal">Most viewed</span></div></li>
+      <li><span class="id">C9</span><div>
+        S. Sarkar, S. Mitra, <span class="me">T. Nath</span>, and S. D. Roy,
+        “<a class="t" href="https://ieeexplore.ieee.org/document/8075838">Performance of different power control schemes for a hybrid LTE system with channel impairment</a>,”
+        <span class="venue">in <em>Proc. International Electrical Engineering Congress (iEECON)</em>, Pattaya, Thailand, Mar. 2017, pp. 1–4.</span></div></li>
+    </ol>
+    <p class="note">ISIT is the flagship conference of the IEEE Information Theory Society, and WCNC is a flagship conference of the IEEE Communications Society.</p>
+  </div>
+</section>
+
+<!-- ===================================================== EXPERIENCE -->
+<section class="view" id="view-experience" data-title="Experience" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Experience</div>
+    <h1>Work, teaching and service</h1>
+  </div>
+  <div class="content">
+    <h2>Professional experience</h2>
+    <ol class="tl">
+      <li class="now">
+        <div class="when">Dec 2026 – Present</div>
+        <h3>Member Research Staff (Grade E-II)</h3>
+        <div class="where">Central Research Laboratory (CRL), Bharat Electronics Limited (BEL), Bangalore</div>
+      </li>
+      <li>
+        <div class="when">Jun 2026 – Nov 2026</div>
+        <h3>Senior Project Scientist</h3>
+        <div class="where">Department of Electrical Engineering, IIT Kanpur · under Prof. Abhishek K. Gupta</div>
+        <ul>
+          <li>Project: Probabilistic constellation shaping in wireless communication, with InterDigital, USA (Oct 2025 – Nov 2026).</li>
+          <li>Project collaborators: Ankit Tiwari (Research Associate), Prof. Abhishek K. Gupta and Prof. Ketan Rajawat (IIT Kanpur), Allan Tsai and Ravi Pragada (InterDigital).</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h2>Teaching assistantships</h2>
+    <dl class="kv">
+      <dt>eMasters programme, IIT Kanpur</dt><dd>Digital Communication Systems I/II (2022, 2024); Coding Theory (2023)</dd>
+      <dt>SWAYAM / NPTEL</dt><dd>An Introduction to Information Theory (2022, 2023); An Introduction to Coding Theory (2020, 2022)</dd>
+      <dt>Institute courses, IIT Kanpur</dt><dd>Communication Theory (2021); Coding Theory (2022)</dd>
+    </dl>
+
+    <h2>Posters and workshops</h2>
+    <ul class="list">
+      <li><span class="yr">2023</span><span>Workshop on Molecular, Biological, and Multi-Scale Communications, King’s College London (virtual).</span></li>
+      <li><span class="yr">2022</span><span>Poster on “On effect of different sequence distributions on ISI in an MCvD system” at the JTG/IEEE Information Theory Society Summer School on Signal Processing, Communications and Networks, IIT Mandi (virtual).</span></li>
+      <li><span class="yr">2019–2022</span><span>JTG/IEEE Information Theory Society Summer Schools at IIT Madras (2019), IIT Kanpur (2021) and IIT Mandi (2022).</span></li>
+    </ul>
+
+    <h2>Service and memberships</h2>
+    <ul class="list">
+      <li><span class="yr">Reviewer</span><span><em>IEEE Communications Letters</em>.</span></li>
+      <li><span class="yr">Member</span><span>IEEE Student Member (Information Theory Society and Communications Society).</span></li>
+      <li><span class="yr">2021</span><span>Volunteer, 27th National Conference on Communications (NCC 2021), virtual conference organised at IIT Kanpur, 27–30 July 2021.</span></li>
+    </ul>
+
+    <h2>Skills</h2>
+    <dl class="kv">
+      <dt>Programming</dt><dd>Python, C</dd>
+      <dt>Software and tools</dt><dd>MATLAB, LaTeX, Simulink</dd>
+      <dt>Languages</dt><dd>Bengali, English, Hindi</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ===================================================== EDUCATION -->
+<section class="view" id="view-education" data-title="Education" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Education</div>
+    <h1>Degrees</h1>
+  </div>
+  <div class="content">
+    <ol class="tl">
+      <li>
+        <div class="when">2018 – 2026</div>
+        <h3>Joint M.Tech and Ph.D., Electrical Engineering</h3>
+        <div class="where">Indian Institute of Technology Kanpur · Supervisor: Prof. Adrish Banerjee</div>
+        <ul>
+          <li>Cumulative Performance Index (CPI): 8.15 / 10</li>
+          <li><strong>Ph.D. thesis:</strong> On designing ISI-reducing channel codes in a diffusion-based molecular communication system.</li>
+          <li><strong>M.Tech thesis:</strong> On designing filtering algorithms in a cooperative MCvD system with adversaries.</li>
+        </ul>
+      </li>
+      <li>
+        <div class="when">2013 – 2017</div>
+        <h3>B.Tech, Electronics and Communication Engineering</h3>
+        <div class="where">National Institute of Technology Durgapur</div>
+        <ul>
+          <li>Cumulative Grade Point Average (CGPA): 9.07 / 10</li>
+        </ul>
+      </li>
+      <li>
+        <div class="when">2011 – 2013</div>
+        <h3>School education</h3>
+        <div class="where">West Bengal</div>
+        <ul>
+          <li>Class XII (WBCHSE, 2013): 89.20%</li>
+          <li>Class X (WBBSE, 2011): 90.63%</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================================================== ACHIEVEMENTS -->
+<section class="view" id="view-achievements" data-title="Achievements" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Achievements</div>
+    <h1>Awards and recognition</h1>
+  </div>
+  <div class="content">
+    <h2>Awards</h2>
+    <ul class="list">
+      <li><span class="yr">2023–2026</span><span>ISIT Student Travel Grant for IEEE ISIT 2023, ISIT 2025 and ISIT 2026.</span></li>
+      <li><span class="yr">2024</span><span>One of the top four finalists of the Bits and Bots competition at IEEE ISIT 2024, Athens, Greece.</span></li>
+      <li><span class="yr">2022</span><span>Finalist for the Best Student Paper Award at IEEE SPCOM 2022, Bangalore, for “On effect of different sequence distributions on ISI in an MCvD system.”</span></li>
+    </ul>
+
+    <h2>Most viewed papers</h2>
+    <p class="note">Papers listed among the popular (most viewed) articles of the venue.</p>
+    <ul class="list">
+      <li><span class="yr">2025</span><span><strong>IEEE ISIT</strong> (Oct. and Nov. 2025): “Improved performance with α, β-constrained transmission: A family of high-rate codes for molecular communication via diffusion.”</span></li>
+      <li><span class="yr">2025</span><span><strong>IEEE TMBMC</strong> (Jul. and Aug. 2025): “On designing novel ISI-reducing single error correcting codes in an MCvD system.”</span></li>
+      <li><span class="yr">2023</span><span><strong>IEEE ISIT</strong> (Aug. 2023): “On novel ISI-reducing channel codes for molecular communication via diffusion.”</span></li>
+      <li><span class="yr">2022</span><span><strong>IEEE SPCOM</strong> (Aug. and Sep. 2022): “On effect of different sequence distributions on ISI in an MCvD system.”</span></li>
+    </ul>
+
+    <h2>School</h2>
+    <ul class="list">
+      <li><span class="yr">2011–2013</span><span>Sub-divisional topper in Secondary (Class X). Sub-divisional topper and 10th in the district in Higher Secondary (Class XII).</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================================================== BEYOND RESEARCH -->
+<section class="view" id="view-activities" data-title="Beyond research" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Beyond research</div>
+    <h1>Hobbies and interests</h1>
+    <p>Outside work, I enjoy these.</p>
+  </div>
+  <div class="content">
+    <div class="hobbies">
+      <div class="hobby">
+        <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M4 16h24M16 4c3.5 3.4 5 7.4 5 12s-1.5 8.6-5 12M16 4c-3.5 3.4-5 7.4-5 12s1.5 8.6 5 12"/></svg>
+        <h3>Travelling</h3>
+        <p>I like to visit new places and see how people live there. Photos from my trips are below.</p>
+      </div>
+      <div class="hobby">
+        <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7c4-1.5 8-1.5 12 1v18c-4-2.5-8-2.5-12-1zM28 7c-4-1.5-8-1.5-12 1v18c4-2.5 8-2.5 12-1z"/></svg>
+        <h3>Reading storybooks</h3>
+        <p>I enjoy reading storybooks in my free time.</p>
+      </div>
+      <div class="hobby">
+        <svg viewBox="0 0 32 32" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 24V7l14-3v17"/><circle cx="8.5" cy="24" r="3.5"/><circle cx="22.5" cy="21" r="3.5"/></svg>
+        <h3>Singing</h3>
+        <p>I love to sing.</p>
+      </div>
+    </div>
+
+    <h2>Travel photos</h2>
+    <div class="empty" id="gallery-empty">Travel photos will be added here soon.</div>
+    <div class="gallery" id="gallery">
+      <!-- To add a photo: upload it to GitHub (for example trip1.jpg) and copy this block, then remove the comment marks.
+      <figure><img src="trip1.jpg" alt="Short description of the photo" loading="lazy"><figcaption>Place, year</figcaption></figure>
+      -->
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================== BIOGRAPHY -->
+<section class="view" id="view-biography" data-title="Biography" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Biography</div>
+    <h1>About me</h1>
+    <p>For talk announcements and session chairs. Use the Copy button to copy the text.</p>
+  </div>
+  <div class="content" style="max-width:900px">
+    <div class="bio-grid">
+      <figure class="portrait">
+        <img src="data:image/jpeg;base64,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" alt="Photo of Tamoghno Nath" width="220" height="275">
+        <figcaption>Tamoghno Nath</figcaption>
       </figure>
-      <p>In my M.Tech thesis, I studied the effect of such relays on the bit error rate (BER) and designed filtering algorithms at the FC. The algorithms remove the lower and the upper extreme values in every interval before fusion, and they do not need pilot symbols <a href="#c2">[C2]</a>, <a href="#r1">[R1]</a>.</p>
-
-      <h3>Constellation shaping and MIMO precoding <span class="sec-tag">Wireless</span></h3>
-      <p>In probabilistic constellation shaping (PCS), low-energy symbols are sent more often than high-energy symbols. This brings the rate closer to the channel capacity at the same average power. The Maxwell–Boltzmann distribution is the usual choice. I studied the optimal symbol distribution for ASK constellations and where it differs from Maxwell–Boltzmann. I also worked on joint power allocation, shaping and precoder design for MIMO channels with SVD and GMD precoders, and on hybrid probabilistic and geometric shaping.</p>
-      <p class="note">This was part of a joint research project between IIT Kanpur and InterDigital, USA (Oct 2025 – Nov 2026).</p>
-    </div>
-  </section>
-
-  <!-- ===================== PUBLICATIONS ===================== -->
-  <section class="block" id="publications" aria-labelledby="pubs-h">
-    <div class="side">
-      <div class="num">02</div>
-      <h2 id="pubs-h">Publications</h2>
-      <p class="sub">Journal papers, conference papers and work under review.</p>
-    </div>
-    <div class="content">
-      <h3>Journal papers</h3>
-      <ol class="pubs">
-        <li id="j2"><span class="id">J2</span><div>
-          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
-          “<span class="t">ISI-aware code design: A linear approach toward reliable molecular communication</span>,”
-          <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, vol. 11, no. 4, pp. 549–571, Dec. 2025.</span></div></li>
-        <li id="j1"><span class="id">J1</span><div>
-          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
-          “<span class="t">On designing novel ISI-reducing single error correcting codes in an MCvD system</span>,”
-          <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, vol. 11, no. 2, pp. 228–233, Jun. 2025.</span></div></li>
-      </ol>
-
-      <h3>Conference papers</h3>
-      <ol class="pubs">
-        <li id="c6"><span class="id">C6</span><div>
-          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
-          “<span class="t">Designing prefix-free ISI-aware character encoding for diffusion-based molecular communication</span>,”
-          <span class="venue">in <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2026.</span><span class="badge">Invited</span></div></li>
-        <li id="c5"><span class="id">C5</span><div>
-          <span class="me">T. Nath</span> and A. Banerjee,
-          “<span class="t">ISI-aware selective variable-length coding for diffusion-based molecular communication channel with refresh</span>,”
-          <span class="venue">in <em>Proc. National Conference on Communications (NCC)</em>, Feb. 2026, pp. 13–18.</span></div></li>
-        <li id="c4"><span class="id">C4</span><div>
-          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
-          “<span class="t">Improved performance with α, β-constrained transmission: A family of high-rate codes 𝒞<sup>(n)</sup><sub>α,β</sub> for molecular communication via diffusion</span>,”
-          <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, Jun. 2025.</span></div></li>
-        <li id="c3"><span class="id">C3</span><div>
-          <span class="me">T. Nath</span> and A. Banerjee,
-          “<span class="t">On novel ISI-reducing channel codes for molecular communication via diffusion</span>,”
-          <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, 2023.</span></div></li>
-        <li id="c2"><span class="id">C2</span><div>
-          <span class="me">T. Nath</span> and A. Banerjee,
-          “<span class="t">On effect of adversaries in a cooperative MCvD network and filtering mechanism</span>,”
-          <span class="venue">in <em>Proc. IEEE Wireless Communications and Networking Conference (WCNC)</em>, 2023.</span></div></li>
-        <li id="c1"><span class="id">C1</span><div>
-          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
-          “<span class="t">On effect of different sequence distributions on ISI in an MCvD system</span>,”
-          <span class="venue">in <em>Proc. International Conference on Signal Processing and Communications (SPCOM)</em>, 2022.</span></div></li>
-      </ol>
-
-      <h3>Under review</h3>
-      <ol class="pubs">
-        <li id="r1"><span class="id">R1</span><div>
-          <span class="me">T. Nath</span> <i>et al.</i>,
-          “<span class="t">On modelling and mitigating adversarial impacts in a cooperative MCvD network</span>,”
-          <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, under revision.</span><span class="badge teal">Revision</span></div></li>
-      </ol>
-      <!-- Add Google Scholar / ORCID links here when ready, e.g.
-      <p class="note">Full list on <a href="https://scholar.google.com/citations?user=YOUR_ID">Google Scholar</a>.</p> -->
-    </div>
-  </section>
-
-  <!-- ===================== EXPERIENCE ===================== -->
-  <section class="block" id="experience" aria-labelledby="exp-h">
-    <div class="side">
-      <div class="num">03</div>
-      <h2 id="exp-h">Experience</h2>
-    </div>
-    <div class="content">
-      <ol class="tl">
-        <li class="now">
-          <div class="when">2026 – Present</div>
-          <h4>Member Research Staff (Grade E-II)</h4>
-          <div class="where">Central Research Laboratory (CRL), Bharat Electronics Limited (BEL), Bangalore</div>
-        </li>
-        <li>
-          <div class="when">Jun 2026 – Nov 2026</div>
-          <h4>Senior Project Scientist</h4>
-          <div class="where">Department of Electrical Engineering, IIT Kanpur · with Prof. Abhishek K. Gupta</div>
-          <ul>
-            <li>Probabilistic constellation shaping and MIMO precoder design, in a joint research project between IIT Kanpur and InterDigital, USA (Oct 2025 – Nov 2026).</li>
-            <li>Collaborators: Ankit Tiwari, Prof. Abhishek K. Gupta and Prof. Ketan Rajawat (IIT Kanpur), Allan Tsai and Ravi Pragada (InterDigital).</li>
-          </ul>
-        </li>
-        <li>
-          <div class="when">2018 – 2026</div>
-          <h4>Research Scholar</h4>
-          <div class="where">Department of Electrical Engineering, IIT Kanpur · with Prof. Adrish Banerjee</div>
-          <ul>
-            <li>Channel codes for molecular communication via diffusion; adversarial nodes in cooperative MCvD networks.</li>
-            <li>Teaching support for EE912E Detection and Estimation Theory (eMasters in Communication Systems).</li>
-          </ul>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ===================== EDUCATION ===================== -->
-  <section class="block" id="education" aria-labelledby="edu-h">
-    <div class="side">
-      <div class="num">04</div>
-      <h2 id="edu-h">Education</h2>
-    </div>
-    <div class="content">
-      <ol class="tl">
-        <li>
-          <div class="when">2018 – 2026</div>
-          <h4>M.Tech and Ph.D. (dual degree), Electrical Engineering</h4>
-          <div class="where">Indian Institute of Technology Kanpur · Supervisor: Prof. Adrish Banerjee</div>
-          <ul>
-            <li><strong>Ph.D. topic:</strong> ISI-aware channel codes for molecular communication via diffusion.</li>
-            <li><strong>M.Tech thesis:</strong> “On Designing Filtering Algorithms in a Cooperative MCvD System with Adversaries” (defended March 2024).</li>
-          </ul>
-        </li>
-        <!-- Add your Bachelor's degree here:
-        <li>
-          <div class="when">YYYY – 2018</div>
-          <h4>B.Tech / B.E., Branch name</h4>
-          <div class="where">Institute name</div>
-        </li>
-        -->
-      </ol>
-    </div>
-  </section>
-
-  <!-- ===================== HONOURS ===================== -->
-  <section class="block" id="honours" aria-labelledby="hon-h">
-    <div class="side">
-      <div class="num">05</div>
-      <h2 id="hon-h">Honours &amp; service</h2>
-    </div>
-    <div class="content">
-      <ul class="honours">
-        <li><span class="yr">2026</span><span>Invited paper at IEEE ANTS 2026.</span></li>
-        <li><span class="yr">2024</span><span>One of the top four finalists of the Bits and Bots competition at IEEE ISIT 2024, as part of a team from IIT Kanpur.</span></li>
-        <li><span class="yr">—</span><span>One of the finalists for the Best Student Paper Award.<!-- add conference and year --></span></li>
-        <li><span class="yr">Service</span><span>Reviewer, <em>IEEE Communications Letters</em>.</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ===================== BIOGRAPHY ===================== -->
-  <section class="block" id="biography" aria-labelledby="bio-h">
-    <div class="side">
-      <div class="num">06</div>
-      <h2 id="bio-h">Biography</h2>
-      <p class="sub">For talk announcements and session chairs. Use the copy buttons.</p>
-    </div>
-    <div class="content">
       <div class="bio">
-        <div class="bio-head"><h4>Full biography</h4><span><button class="btn copy" type="button" data-copy="bio-long" id="copy-long">Copy</button><span class="copied" aria-live="polite"></span></span></div>
+        <div class="bio-head"><h2>Biography</h2><span><button class="btn copy" type="button" data-copy="bio-long" id="copy-bio">Copy</button><span class="copied" aria-live="polite"></span></span></div>
         <div id="bio-long">
-          <p>Tamoghno Nath is a Member Research Staff at the Central Research Laboratory (CRL), Bharat Electronics Limited, Bangalore. He completed the dual-degree M.Tech and Ph.D. programme in Electrical Engineering at the Indian Institute of Technology Kanpur, under the supervision of Prof. Adrish Banerjee.</p>
-          <p>His doctoral research was on channel codes for molecular communication via diffusion. In this work, he designed codes that reduce inter-symbol interference and correct errors at the same time, including prefix-free variable-length codes for sending text. His M.Tech thesis studied adversarial relays in a cooperative molecular communication network and proposed filtering algorithms at the fusion centre.</p>
-          <p>From June to November 2026, he was a Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta. There he worked on probabilistic constellation shaping and MIMO precoding in a joint project with InterDigital, USA. His papers have appeared in the IEEE Transactions on Molecular, Biological, and Multi-Scale Communications, IEEE ISIT, IEEE WCNC, NCC and SPCOM. He is a reviewer for the IEEE Communications Letters.</p>
-        </div>
-      </div>
-      <div class="bio" style="margin-top:16px">
-        <div class="bio-head"><h4>Short biography</h4><span><button class="btn copy" type="button" data-copy="bio-short" id="copy-short">Copy</button><span class="copied" aria-live="polite"></span></span></div>
-        <div id="bio-short">
-          <p>Tamoghno Nath is a Member Research Staff at CRL, Bharat Electronics Limited, Bangalore. He received his M.Tech and Ph.D. in Electrical Engineering from IIT Kanpur. His research interests are molecular communication, error-control coding and constellation shaping.</p>
+          <p>Tamoghno Nath is a Member Research Staff at the Central Research Laboratory (CRL), Bharat Electronics Limited, Bangalore. He received the B.Tech degree in Electronics and Communication Engineering from the National Institute of Technology Durgapur in 2017. He then completed the joint M.Tech and Ph.D. programme in Electrical Engineering at the Indian Institute of Technology Kanpur, under the supervision of Prof. Adrish Banerjee.</p>
+          <p>His Ph.D. thesis is on designing ISI-reducing channel codes for diffusion-based molecular communication. In this work, he designed constrained codes that reduce inter-symbol interference and correct errors at the same time, including prefix-free variable-length codes for sending text. His M.Tech thesis studied adversarial relays in a cooperative molecular communication network and proposed filtering algorithms at the fusion centre.</p>
+          <p>From June to November 2026, he was a Senior Project Scientist at IIT Kanpur under Prof. Abhishek K. Gupta. There he worked on probabilistic constellation shaping in a joint project with InterDigital, USA. His papers have appeared in the IEEE Transactions on Communications, the IEEE Transactions on Molecular, Biological, and Multi-Scale Communications, IEEE ISIT, IEEE WCNC, NCC and SPCOM. One of his papers was a finalist for the Best Student Paper Award at IEEE SPCOM 2022, and he received student travel grants for IEEE ISIT 2023, 2025 and 2026. He is a reviewer for the IEEE Communications Letters.</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===================== CONTACT ===================== -->
-  <section class="block" id="contact" aria-labelledby="con-h">
-    <div class="side">
-      <div class="num">07</div>
-      <h2 id="con-h">Contact</h2>
+<!-- ===================================================== CONTACT -->
+<section class="view" id="view-contact" data-title="Contact" hidden>
+  <div class="page-head">
+    <div class="eyebrow">Contact</div>
+    <h1>Get in touch</h1>
+  </div>
+  <div class="content">
+    <div class="contact-grid">
+      <div><div class="k">Email</div><div class="v"><a href="mailto:tamoghnonath@gmail.com">tamoghnonath@gmail.com</a></div></div>
+      <div><div class="k">Office</div><div class="v">Central Research Laboratory, Bharat Electronics Limited, Bangalore, India</div></div>
+      <div><div class="k">Google Scholar</div><div class="v"><a href="https://scholar.google.com/citations?user=LWbXZE8AAAAJ&amp;hl=en">Tamoghno Nath</a></div></div>
+      <div><div class="k">ORCID</div><div class="v"><a href="https://orcid.org/0000-0002-0710-4940">0000-0002-0710-4940</a></div></div>
+      <div><div class="k">LinkedIn</div><div class="v"><a href="https://www.linkedin.com/in/tamoghno-nath-242937128">tamoghno-nath</a></div></div>
+      <div><div class="k">IIT Kanpur profile</div><div class="v"><a href="https://iitk.ac.in/tamoghno">iitk.ac.in/tamoghno</a></div></div>
     </div>
-    <div class="content">
-      <div class="contact-grid">
-        <div><div class="k">Email</div><div class="v"><a href="mailto:tamoghnonath@gmail.com">tamoghnonath@gmail.com</a></div></div>
-        <div><div class="k">Office</div><div class="v">Central Research Laboratory, Bharat Electronics Limited, Bangalore, India</div></div>
-        <div><div class="k">IIT Kanpur profile</div><div class="v"><a href="https://iitk.ac.in/tamoghno">iitk.ac.in/tamoghno</a></div></div>
-        <!-- Add more cards when ready, e.g.
-        <div><div class="k">Google Scholar</div><div class="v"><a href="https://scholar.google.com/citations?user=YOUR_ID">Profile</a></div></div>
-        <div><div class="k">ORCID</div><div class="v"><a href="https://orcid.org/YOUR-ORCID">YOUR-ORCID</a></div></div>
-        -->
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
+
 </main>
 
 <footer>
   <div class="wrap">
-    <span>© 2026 Tamoghno Nath</span>
-    <span>Last updated: November 2026</span>
+    <span>© 2026 Tamoghno Nath · Last updated November 2026</span>
+    <nav aria-label="Profiles">
+      <a href="https://scholar.google.com/citations?user=LWbXZE8AAAAJ&amp;hl=en">Google Scholar</a>
+      <a href="https://orcid.org/0000-0002-0710-4940">ORCID</a>
+      <a href="https://www.linkedin.com/in/tamoghno-nath-242937128">LinkedIn</a>
+    </nav>
   </div>
 </footer>
 
@@ -576,24 +722,48 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
   function onTheme(){ readColors(); themeListeners.forEach(function(f){ f(); }); }
   try { new MutationObserver(onTheme).observe(root, {attributes:true, attributeFilter:["data-theme"]}); } catch(e){}
   try { window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onTheme); } catch(e){}
-
   function randn(){ var u=0,v=0; while(!u)u=Math.random(); while(!v)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+  /* ---------------- Page switching: one page per menu item ---------------- */
+  var views = Array.prototype.slice.call(document.querySelectorAll(".view"));
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll("nav.links a"));
+  var redrawHero = null;
+  function show(){
+    var id = (location.hash || "").replace("#", "") || "home";
+    if (!document.getElementById("view-" + id)) id = "home";
+    views.forEach(function(v){ v.hidden = (v.id !== "view-" + id); });
+    navLinks.forEach(function(a){
+      if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    var v = document.getElementById("view-" + id);
+    var t = v.getAttribute("data-title");
+    document.title = (id === "home") ? "Tamoghno Nath" : t + " · Tamoghno Nath";
+    window.scrollTo(0, 0);
+    if (id === "home" && redrawHero) redrawHero();
+    var cur = document.querySelector('nav.links a[aria-current="page"]');
+    if (cur && cur.scrollIntoView) { try { cur.scrollIntoView({block:"nearest", inline:"nearest"}); } catch(e){} }
+  }
+  window.addEventListener("hashchange", show);
+  show();
+
+  /* hide the "photos coming soon" note once photos are added */
+  var gal = document.getElementById("gallery");
+  if (gal && gal.querySelector("figure")) document.getElementById("gallery-empty").hidden = true;
 
   /* ---------------- Background bit lattice ---------------- */
   (function(){
     var cv = document.getElementById("lattice"); if(!cv) return;
     var ctx = cv.getContext("2d");
     var cell = 22, cols = 0, rows = 0, grid = [], heat = [], dpr = 1;
+    function setFont(){ ctx.font = "11px " + (tok("--font-mono") || "monospace"); ctx.textAlign = "center"; ctx.textBaseline = "middle"; }
     function size(){
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       cv.width = Math.floor(innerWidth * dpr); cv.height = Math.floor(innerHeight * dpr);
       ctx.setTransform(dpr,0,0,dpr,0,0);
       cols = Math.ceil(innerWidth / cell); rows = Math.ceil(innerHeight / cell);
       grid = []; heat = [];
-      for (var r=0;r<rows;r++){ for (var c=0;c<cols;c++){
-        // sparse 1s, roughly like a low-density parity-check matrix
-        grid.push(Math.random() < 0.13 ? 1 : 0); heat.push(0);
-      }}
+      for (var i=0;i<rows*cols;i++){ grid.push(Math.random() < 0.13 ? 1 : 0); heat.push(0); }
       drawAll();
     }
     function drawCell(i){
@@ -605,17 +775,13 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       ctx.fillText(one ? "1" : "0", x + cell/2, y + cell/2 + 1);
     }
     function drawAll(){
-      ctx.clearRect(0,0,innerWidth,innerHeight);
-      ctx.font = "11px " + (tok("--font-mono") || "monospace");
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.clearRect(0,0,innerWidth,innerHeight); setFont();
       for (var i=0;i<grid.length;i++) drawCell(i);
       ctx.globalAlpha = 1;
     }
     var hot = [];
     function tick(){
-      ctx.font = "11px " + (tok("--font-mono") || "monospace");
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      // light up a short column run, like a parity check touching a few bits
+      setFont();
       var c = (Math.random()*cols)|0, r0 = (Math.random()*rows)|0;
       for (var k=0;k<4;k++){
         var r = (r0 + k*3) % rows, i = r*cols + c;
@@ -625,8 +791,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       var next = [];
       for (var j=0;j<hot.length;j++){
         var id = hot[j]; heat[id] *= 0.88;
-        if (heat[id] < 0.02){ heat[id] = 0; }
-        else next.push(id);
+        if (heat[id] < 0.02) heat[id] = 0; else next.push(id);
         drawCell(id);
       }
       hot = next; ctx.globalAlpha = 1;
@@ -637,18 +802,15 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
     if (!reduce) setInterval(tick, 140);
   })();
 
-  /* ---------------- Hero: live diffusion channel ---------------- */
+  /* ---------------- Home: live diffusion channel ---------------- */
   (function(){
     var cv = document.getElementById("mc-canvas"); if(!cv) return;
     var ctx = cv.getContext("2d");
     var W = 0, H = 0, dpr = 1;
-    var NS = 14;                // slots shown
-    var slotDur = 0.9;         // seconds per bit interval
-    var Nrel = 130;             // molecules per bit-1
-    var parts = [], bits = [], counts = [], slot = 0, tSlot = 0, flash = 0;
-    var D = 2;                  // (d, inf) constraint: at least D zeros after each 1
-    var zerosLeft = 0;
-
+    var NS = 14, slotDur = 0.9, Nrel = 130;
+    var parts = [], bits = [], counts = [], tSlot = 0, flash = 0;
+    var D = 2, zerosLeft = 0;
+    function mono(w, s){ return w + " " + s + "px " + (tok("--font-mono") || "monospace"); }
     function nextBit(){
       if (zerosLeft > 0){ zerosLeft--; return 0; }
       var b = Math.random() < 0.55 ? 1 : 0;
@@ -656,19 +818,16 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       return b;
     }
     function geom(){
-      return {
-        bitsY: 6, bitsH: 24,
-        chTop: 48, chBot: H - 98,
-        barTop: H - 82, barBot: H - 16,
-        xTx: Math.max(36, W*0.08), xRx: W*0.9
-      };
+      return { bitsY:6, bitsH:24, chTop:48, chBot:H-98, barTop:H-82, barBot:H-16, xTx:Math.max(36, W*0.08), xRx:W*0.9 };
     }
     function size(){
       var rect = cv.getBoundingClientRect();
+      if (!rect.width) return false;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       W = rect.width; H = rect.height;
       cv.width = Math.floor(W*dpr); cv.height = Math.floor(H*dpr);
       ctx.setTransform(dpr,0,0,dpr,0,0);
+      return true;
     }
     function startSlot(){
       var b = nextBit();
@@ -682,9 +841,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
     }
     function step(dt){
       var g = geom(), L = g.xRx - g.xTx;
-      var v = L / (1.15*slotDur);            // mild flow towards the receiver
-      var sig = 0.40 * L / Math.sqrt(slotDur); // diffusion strength
-      var s = sig*Math.sqrt(dt);
+      var v = L / (1.15*slotDur);
+      var s = 0.40 * L / Math.sqrt(slotDur) * Math.sqrt(dt);
       var keep = [];
       for (var i=0;i<parts.length;i++){
         var p = parts[i];
@@ -693,63 +851,53 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
         if (p.y < g.chTop+3) p.y = 2*(g.chTop+3) - p.y;
         if (p.y > g.chBot-3) p.y = 2*(g.chBot-3) - p.y;
         if (p.x < g.xTx + 10) p.x = 2*(g.xTx+10) - p.x;
-        if (p.x >= g.xRx - 6){ counts[counts.length-1]++; continue; } // absorbed
+        if (p.x >= g.xRx - 6){ counts[counts.length-1]++; continue; }
         keep.push(p);
       }
       parts = keep;
       tSlot += dt;
-      if (tSlot >= slotDur){ tSlot -= slotDur; slot++; startSlot(); }
+      if (tSlot >= slotDur){ tSlot -= slotDur; startSlot(); }
       flash *= Math.pow(0.02, dt);
     }
+    function roundRect(x,y,w,h,r){
+      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+      ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+    }
     function draw(){
+      if (!W) return;
       var g = geom();
       ctx.clearRect(0,0,W,H);
-      var colW = (W - 8) / NS;
-      // bit strip
-      ctx.font = "600 12px " + (tok("--font-mono") || "monospace");
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      var off = NS - bits.length;
+      var colW = (W - 8) / NS, off = NS - bits.length;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.font = mono(600, 12);
       for (var k=0;k<bits.length;k++){
         var x = 4 + (k+off)*colW, cur = (k === bits.length-1);
-        ctx.globalAlpha = 1;
         ctx.fillStyle = bits[k] ? C.signal : C.line;
         ctx.globalAlpha = bits[k] ? (cur ? 1 : 0.85) : (cur ? 0.9 : 0.55);
         roundRect(x+3, g.bitsY, colW-6, g.bitsH, 4); ctx.fill();
         ctx.globalAlpha = 1;
         ctx.fillStyle = bits[k] ? C.surface : C.muted;
         ctx.fillText(String(bits[k]), x + colW/2, g.bitsY + g.bitsH/2 + 1);
-        if (cur){
-          ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
-          roundRect(x+1.5, g.bitsY-1.5, colW-3, g.bitsH+3, 5); ctx.stroke();
-        }
+        if (cur){ ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5; roundRect(x+1.5, g.bitsY-1.5, colW-3, g.bitsH+3, 5); ctx.stroke(); }
       }
-      // channel walls (a vessel)
       ctx.strokeStyle = C.line; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(g.xTx-20, g.chTop); ctx.lineTo(W-4, g.chTop); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(g.xTx-20, g.chBot); ctx.lineTo(W-4, g.chBot); ctx.stroke();
-      // Tx
       var cy = (g.chTop + g.chBot)/2;
       ctx.globalAlpha = 0.18 + 0.5*flash; ctx.fillStyle = C.signal;
       ctx.beginPath(); ctx.arc(g.xTx, cy, 16 + 8*flash, 0, Math.PI*2); ctx.fill();
       ctx.globalAlpha = 1; ctx.strokeStyle = C.signal; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(g.xTx, cy, 14, 0, Math.PI*2); ctx.stroke();
-      ctx.fillStyle = C.ink; ctx.font = "600 11px " + (tok("--font-mono") || "monospace");
-      ctx.fillText("Tx", g.xTx, cy+1);
-      // molecules
+      ctx.fillStyle = C.ink; ctx.font = mono(600, 11); ctx.fillText("Tx", g.xTx, cy+1);
       ctx.fillStyle = C.accent; ctx.globalAlpha = 0.85;
       for (var i=0;i<parts.length;i++){ ctx.beginPath(); ctx.arc(parts[i].x, parts[i].y, 1.9, 0, Math.PI*2); ctx.fill(); }
-      ctx.globalAlpha = 1;
-      // Rx: absorbing receiver wall with receptors
-      ctx.fillStyle = C.accent; ctx.globalAlpha = 0.16;
-      ctx.fillRect(g.xRx-6, g.chTop+1, W-4-(g.xRx-6), g.chBot-g.chTop-2);
+      ctx.globalAlpha = 0.16; ctx.fillRect(g.xRx-6, g.chTop+1, W-4-(g.xRx-6), g.chBot-g.chTop-2);
       ctx.globalAlpha = 1; ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(g.xRx-6, g.chTop); ctx.lineTo(g.xRx-6, g.chBot); ctx.stroke();
       for (var yy = g.chTop+8; yy < g.chBot-4; yy += 10){
         ctx.beginPath(); ctx.moveTo(g.xRx-6, yy); ctx.lineTo(g.xRx-12, yy-3); ctx.moveTo(g.xRx-6, yy); ctx.lineTo(g.xRx-12, yy+3); ctx.stroke();
       }
-      ctx.fillStyle = C.ink; ctx.textAlign = "center";
-      ctx.fillText("Rx", (g.xRx + W - 4)/2, cy+1);
-      // count bars
+      ctx.fillStyle = C.ink; ctx.fillText("Rx", (g.xRx + W - 4)/2, cy+1);
       var maxC = Nrel * 0.75;
       ctx.strokeStyle = C.line; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(4, g.barBot+0.5); ctx.lineTo(W-4, g.barBot+0.5); ctx.stroke();
@@ -760,16 +908,15 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
         ctx.fillRect(bx + colW*0.22, g.barBot - h, colW*0.56, h);
         ctx.globalAlpha = 1;
         if (!bits[m] && counts[m] > 2 && m < counts.length-1){
-          ctx.fillStyle = C.signal; ctx.font = "600 9px " + (tok("--font-mono") || "monospace");
+          ctx.fillStyle = C.signal; ctx.font = mono(600, 9);
           ctx.fillText("ISI", bx + colW/2, g.barBot - h - 7);
         }
       }
-      // threshold
       var thY = g.barBot - (Nrel*0.28/maxC)*(g.barBot-g.barTop);
       ctx.setLineDash([4,4]); ctx.strokeStyle = C.signal; ctx.globalAlpha = 0.7;
       ctx.beginPath(); ctx.moveTo(4, thY); ctx.lineTo(W-4, thY); ctx.stroke();
       ctx.setLineDash([]); ctx.globalAlpha = 1;
-      ctx.textAlign = "left"; ctx.fillStyle = C.muted; ctx.font = "10px " + (tok("--font-mono") || "monospace");
+      ctx.textAlign = "left"; ctx.fillStyle = C.muted; ctx.font = mono(400, 10);
       ctx.fillText("count / interval", 6, g.barTop - 4);
       var tx0 = 6 + ctx.measureText("count / interval").width + 16;
       ctx.setLineDash([4,4]); ctx.strokeStyle = C.signal; ctx.globalAlpha = 0.8;
@@ -778,26 +925,18 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       ctx.fillText("threshold", tx0 + 24, g.barTop - 4);
       ctx.textAlign = "center";
     }
-    function roundRect(x,y,w,h,r){
-      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-      ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
-      ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-    }
-
     size();
-    // warm up so the first frame already shows a full picture
     startSlot();
-    for (var w=0; w< NS*slotDur/ (1/60); w++) step(1/60);
+    for (var w=0; w < NS*slotDur*60; w++) step(1/60);
     draw();
-    var ro; try { ro = new ResizeObserver(function(){ size(); draw(); }); ro.observe(cv); } catch(e){ addEventListener("resize", function(){ size(); draw(); }); }
+    redrawHero = function(){ if (size()) draw(); };
+    try { new ResizeObserver(function(){ if (size()) draw(); }).observe(cv); } catch(e){ addEventListener("resize", redrawHero); }
     themeListeners.push(draw);
-
     if (!reduce){
-      var last = performance.now(), visible = true;
-      try { new IntersectionObserver(function(es){ visible = es[0].isIntersecting; }).observe(cv); } catch(e){}
+      var last = performance.now();
       (function loop(now){
         var dt = Math.min(0.05, (now - last)/1000); last = now;
-        if (visible && !document.hidden){ step(dt); draw(); }
+        if (!document.hidden && !document.getElementById("view-home").hidden && W){ step(dt); draw(); }
         requestAnimationFrame(loop);
       })(last);
     }
@@ -807,25 +946,21 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
   (function(){
     var svg = document.getElementById("cir"); if(!svg) return;
     var NS = "http://www.w3.org/2000/svg";
-    var x0 = 50, x1 = 620, y0 = 190, yTop = 20, slots = 5;
-    var T = 1, a = 0.18;            // h(t) ~ t^(-3/2) exp(-a/t)
+    var x0 = 50, x1 = 620, y0 = 190, yTop = 20, slots = 5, T = 1, a = 0.18;
     function h(t){ return t<=0 ? 0 : Math.pow(t,-1.5)*Math.exp(-a/t); }
-    var tp = 2*a/3, hmax = h(tp);
+    var hmax = h(2*a/3);
     function X(t){ return x0 + (x1-x0)*t/(slots*T); }
     function Y(v){ return y0 - (y0-yTop)*v/hmax*0.92; }
     function el(n, at, txt){ var e = document.createElementNS(NS, n); for (var k in at) e.setAttribute(k, at[k]); if (txt) e.textContent = txt; svg.appendChild(e); return e; }
-    // shaded areas per slot
     for (var s=0;s<slots;s++){
       var d = "M" + X(s*T) + "," + y0;
       for (var i=0;i<=60;i++){ var t = s*T + T*i/60; d += " L" + X(t).toFixed(1) + "," + Y(h(t)).toFixed(1); }
       d += " L" + X((s+1)*T) + "," + y0 + " Z";
       el("path", {d:d, fill: s===0 ? "var(--accent)" : "var(--signal)", "fill-opacity": s===0 ? 0.22 : 0.18});
     }
-    // curve
     var dc = "";
     for (var j=0;j<=400;j++){ var tt = slots*T*j/400; dc += (j? " L":"M") + X(tt).toFixed(1) + "," + Y(h(tt)).toFixed(1); }
     el("path", {d:dc, fill:"none", stroke:"var(--accent)", "stroke-width":2.2});
-    // slot boundaries
     for (var b=0;b<=slots;b++){
       el("line", {x1:X(b*T), y1:yTop-6, x2:X(b*T), y2:y0, stroke:"var(--line)", "stroke-width":1, "stroke-dasharray": b? "3 4":"0"});
       el("text", {x:X(b*T), y:y0+18, "text-anchor":"middle", fill:"var(--muted)", "font-size":12, "font-family":"JetBrains Mono, monospace"}, b===0 ? "0" : (b===1 ? "T" : b+"T"));
@@ -833,7 +968,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
     el("line", {x1:x0, y1:y0, x2:x1+6, y2:y0, stroke:"var(--muted)", "stroke-width":1.2});
     el("text", {x:x1+10, y:y0+4, "text-anchor":"start", fill:"var(--muted)", "font-size":12, "font-family":"JetBrains Mono, monospace"}, "t");
     el("text", {x:x0-8, y:yTop+4, "text-anchor":"end", fill:"var(--muted)", "font-size":12, "font-family":"JetBrains Mono, monospace"}, "h(t)");
-    el("text", {x:(X(0)+X(T))/2, y:Y(hmax)-8 < yTop ? yTop+6 : Y(hmax*0.55), "text-anchor":"start", dx:22, fill:"var(--accent)", "font-size":12, "font-weight":600, "font-family":"IBM Plex Sans, sans-serif"}, "current bit");
+    el("text", {x:(X(0)+X(T))/2, y:Y(hmax*0.55), "text-anchor":"start", dx:22, fill:"var(--accent)", "font-size":12, "font-weight":600, "font-family":"IBM Plex Sans, sans-serif"}, "current bit");
     el("text", {x:(X(T)+X(4*T))/2, y:Y(h(1.6*T))-26, "text-anchor":"middle", fill:"var(--signal)", "font-size":12, "font-weight":600, "font-family":"IBM Plex Sans, sans-serif"}, "ISI on the next bits");
     el("path", {d:"M" + ((X(T)+X(4*T))/2) + "," + (Y(h(1.6*T))-20) + " L" + X(1.6*T) + "," + (Y(h(1.6*T))-4), stroke:"var(--signal)", "stroke-width":1.2, fill:"none"});
   })();
@@ -845,9 +980,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       var text = Array.prototype.map.call(src.querySelectorAll("p"), function(p){ return p.textContent.trim(); }).join("\n\n");
       var note = btn.parentNode.querySelector(".copied");
       function done(msg){ note.textContent = msg; setTimeout(function(){ note.textContent = ""; }, 2200); }
-      try {
-        navigator.clipboard.writeText(text).then(function(){ done("Copied"); }, function(){ done("Select the text to copy"); });
-      } catch(e){ done("Select the text to copy"); }
+      try { navigator.clipboard.writeText(text).then(function(){ done("Copied"); }, function(){ done("Select the text to copy"); }); }
+      catch(e){ done("Select the text to copy"); }
     });
   });
 })();
