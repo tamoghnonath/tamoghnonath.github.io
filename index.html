@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tamoghno Nath</title>
+<meta name="description" content="Tamoghno Nath: researcher in molecular communication, channel coding and constellation shaping. Member Research Staff, CRL, Bharat Electronics Limited, Bangalore.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a quiet academic page. A sticky side label column for each section,
+   content on the right. Background: a faint bit lattice (a parity-check-like matrix)
+   in the margins; the hero shows a live diffusion channel carrying a zero-padded codeword. */
+:root{
+  --bg:#f4f6f7;
+  --surface:#ffffff;
+  --ink:#15222c;
+  --muted:#5b6973;
+  --line:#d6dee3;
+  --accent:#0e7480;      /* molecules, links */
+  --signal:#c26f12;      /* bit-1, emphasis */
+  --accent-soft:rgba(14,116,128,.09);
+  --signal-soft:rgba(194,111,18,.12);
+  --font-display:"Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-body:"IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --max:1100px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b131a; --surface:#111c25; --ink:#e3eaef; --muted:#97a7b2; --line:#22323e;
+    --accent:#4fbec7; --signal:#efa64a;
+    --accent-soft:rgba(79,190,199,.10); --signal-soft:rgba(239,166,74,.13);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b131a; --surface:#111c25; --ink:#e3eaef; --muted:#97a7b2; --line:#22323e;
+  --accent:#4fbec7; --signal:#efa64a;
+  --accent-soft:rgba(79,190,199,.10); --signal-soft:rgba(239,166,74,.13);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--font-body);font-size:16.5px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+#lattice{
+  position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to right,#000 0%,rgba(0,0,0,.55) 12%,transparent 26%,transparent 74%,rgba(0,0,0,.55) 88%,#000 100%);
+          mask-image:linear-gradient(to right,#000 0%,rgba(0,0,0,.55) 12%,transparent 26%,transparent 74%,rgba(0,0,0,.55) 88%,#000 100%);
+}
+.wrap{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:0 24px}
+a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px;border-radius:3px}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;line-height:1.2;text-wrap:balance;margin:0}
+p{margin:0 0 .9em}
+.mono{font-family:var(--font-mono)}
+
+/* ---------- header ---------- */
+header.top{
+  position:sticky;top:0;z-index:10;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+header.top .wrap{display:flex;align-items:center;gap:24px;height:58px}
+.brand{font-family:var(--font-display);font-size:1.25rem;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand span{color:var(--signal)}
+nav.links{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+nav.links::-webkit-scrollbar{display:none}
+nav.links a{
+  color:var(--muted);text-decoration:none;font-size:.92rem;font-weight:500;
+  padding:6px 10px;border-radius:6px;white-space:nowrap;
+}
+nav.links a:hover{color:var(--ink);background:var(--accent-soft)}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:44px;align-items:center;padding:56px 0 40px}
+.eyebrow{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(2.4rem,5vw,3.5rem);font-weight:500;letter-spacing:-.01em;margin-bottom:12px}
+.role{font-size:1.06rem;color:var(--muted);margin-bottom:18px}
+.role strong{color:var(--ink);font-weight:600}
+.lede{font-size:1.08rem;max-width:34em}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:7px;
+  font-weight:500;font-size:.95rem;text-decoration:none;border:1px solid var(--line);
+  color:var(--ink);background:var(--surface);cursor:pointer;font-family:inherit;
+}
+.btn:hover{border-color:var(--accent);text-decoration:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn.primary:hover{filter:brightness(1.08)}
+
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 10px}
+.sim canvas{display:block;width:100%;height:320px}
+.sim figcaption{font-size:.82rem;color:var(--muted);line-height:1.5;margin-top:8px}
+.sim figcaption b{color:var(--signal);font-family:var(--font-mono);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.78rem;color:var(--muted);font-family:var(--font-mono);margin-top:6px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+
+/* ---------- sections ---------- */
+section.block{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;padding:56px 0;border-top:1px solid var(--line)}
+.side{position:sticky;top:84px;align-self:start}
+.side .num{font-family:var(--font-mono);font-size:.78rem;color:var(--signal);letter-spacing:.05em}
+.side h2{font-size:1.85rem;margin-top:4px}
+.side .sub{font-size:.86rem;color:var(--muted);margin-top:8px;line-height:1.5}
+.content{max-width:720px}
+.content h3{font-size:1.45rem;margin:36px 0 12px}
+.content h3:first-child{margin-top:0}
+.content h4{font-family:var(--font-body);font-size:1rem;font-weight:600;margin:24px 0 6px}
+.content .note{font-size:.9rem;color:var(--muted)}
+.sec-tag{font-family:var(--font-mono);font-size:.74rem;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:4px;font-weight:400;letter-spacing:.02em}
+
+/* bit chips */
+.bits{display:inline-flex;gap:2px;font-family:var(--font-mono);font-size:.9rem;vertical-align:middle}
+.bits b{display:inline-grid;place-items:center;width:1.45em;height:1.6em;border-radius:3px;font-weight:600;background:var(--accent-soft);color:var(--muted)}
+.bits b.one{background:var(--signal);color:var(--surface)}
+.bits .gap{width:.6em}
+.codebox{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--signal);border-radius:8px;padding:14px 18px;margin:14px 0 18px}
+.codebox .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-size:.9rem;color:var(--muted)}
+.codebox .row + .row{margin-top:8px}
+.codebox .lbl{min-width:9.5em;font-weight:500;color:var(--ink)}
+
+figure.diagram{margin:16px 0 22px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 10px;overflow-x:auto}
+figure.diagram svg{display:block;width:100%;min-width:480px;height:auto}
+figure.diagram figcaption{font-size:.84rem;color:var(--muted);margin-top:6px;line-height:1.5}
+
+.formula{font-family:var(--font-mono);font-size:.92rem;background:var(--accent-soft);padding:2px 7px;border-radius:4px;white-space:nowrap}
+
+/* news */
+.news{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.news li{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:14px}
+.news time{font-family:var(--font-mono);font-size:.84rem;color:var(--accent);padding-top:2px;font-variant-numeric:tabular-nums}
+
+/* interests */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.chips span{font-size:.86rem;border:1px solid var(--line);background:var(--surface);padding:4px 11px;border-radius:999px}
+
+/* publications */
+.pubs{list-style:none;margin:0 0 8px;padding:0}
+.pubs li{display:grid;grid-template-columns:3.2em minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.pubs li:last-child{border-bottom:0}
+.pubs .id{font-family:var(--font-mono);font-size:.82rem;color:var(--signal);padding-top:3px;font-weight:600}
+.pubs .t{font-weight:500}
+.pubs .me{font-weight:600;color:var(--ink)}
+.pubs .venue{color:var(--muted);font-size:.93rem}
+.pubs em{font-style:italic}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.7rem;padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:2px;border:1px solid var(--signal);color:var(--signal)}
+.badge.teal{border-color:var(--accent);color:var(--accent)}
+
+/* timeline (experience / education) */
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl li{position:relative;padding:0 0 26px 26px;border-left:1px solid var(--line);margin-left:6px}
+.tl li:last-child{padding-bottom:4px}
+.tl li::before{content:"";position:absolute;left:-6px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl li.now::before{background:var(--signal);border-color:var(--signal)}
+.tl .when{font-family:var(--font-mono);font-size:.82rem;color:var(--accent);font-variant-numeric:tabular-nums}
+.tl h4{font-family:var(--font-display);font-size:1.22rem;font-weight:500;margin:2px 0 2px}
+.tl .where{color:var(--muted);font-size:.95rem;margin-bottom:6px}
+.tl ul{margin:6px 0 0;padding-left:18px}
+.tl ul li{border:0;padding:0 0 3px;margin:0;font-size:.95rem}
+.tl ul li::before{display:none}
+
+/* honours */
+.honours{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.honours li{display:grid;grid-template-columns:4.6em minmax(0,1fr);gap:12px;align-items:baseline}
+.honours .yr{font-family:var(--font-mono);font-size:.84rem;color:var(--signal);font-variant-numeric:tabular-nums}
+
+/* biography */
+.bio{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 26px}
+.bio p{font-size:1.03rem}
+.bio-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.bio-head h4{margin:0}
+.copy{font-size:.82rem;padding:5px 11px}
+.copied{font-size:.8rem;color:var(--accent);margin-left:8px}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.contact-grid div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.contact-grid .k{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.contact-grid .v{margin-top:4px;word-break:break-word}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:26px 0 40px;font-size:.84rem;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px){
+  .hero{grid-template-columns:minmax(0,1fr);gap:28px;padding-top:36px}
+  section.block{grid-template-columns:minmax(0,1fr);gap:16px;padding:42px 0}
+  .side{position:static}
+  .side h2{font-size:1.65rem}
+}
+@media (max-width: 560px){
+  .wrap{padding:0 16px}
+  header.top .wrap{gap:12px}
+  .brand{font-size:1.1rem}
+  .sim canvas{height:280px}
+  .news li{grid-template-columns:1fr;gap:0}
+  .honours li{grid-template-columns:1fr;gap:0}
+  .bio{padding:18px}
+  .codebox .lbl{min-width:0;width:100%}
+}
+</style>
+</head>
+<body>
+<canvas id="lattice" aria-hidden="true"></canvas>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home">Tamoghno Nath<span>.</span></a>
+    <nav class="links" aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#honours">Honours</a>
+      <a href="#biography">Biography</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="home">
+
+  <!-- ===================== HERO ===================== -->
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Molecular communication · Coding theory · Wireless</div>
+      <h1>Tamoghno Nath</h1>
+      <p class="role"><strong>Member Research Staff</strong><br>Central Research Laboratory (CRL), Bharat Electronics Limited, Bangalore</p>
+      <p class="lede">I design channel codes for molecular communication, where molecules carry the bits and the channel has a long memory. I also work on probabilistic constellation shaping and MIMO precoding for wireless systems. I did my M.Tech and Ph.D. in Electrical Engineering at IIT Kanpur.</p>
+      <div class="actions">
+        <a class="btn primary" href="#publications">Publications</a>
+        <a class="btn" href="#research">Research</a>
+        <!-- To add a CV download: put cv.pdf next to this file and remove the comment marks below.
+        <a class="btn" href="cv.pdf">Download CV</a>
+        -->
+        <a class="btn" href="#contact">Contact</a>
+      </div>
+    </div>
+
+    <figure class="sim" style="margin:0">
+      <canvas id="mc-canvas" role="img" aria-label="Animation of a diffusion channel. A transmitter releases molecules for every bit-1 of a zero-padded codeword. The molecules diffuse to a receiver, and the bar chart shows how many molecules arrive in each bit interval, including late arrivals that cause inter-symbol interference."></canvas>
+      <div class="legend">
+        <span><i style="background:var(--signal)"></i>bit-1 (release)</span>
+        <span><i style="background:var(--accent)"></i>molecule</span>
+        <span><i style="background:var(--muted)"></i>count per bit interval</span>
+      </div>
+      <figcaption>A live molecular channel. The transmitter sends a codeword in which every <b>1</b> is followed by at least two <b>0</b>s. Molecules diffuse to the receiver. Some arrive late and add to the count of the next intervals. This is inter-symbol interference (ISI).</figcaption>
+    </figure>
+  </div>
+
+  <!-- ===================== NEWS ===================== -->
+  <section class="block" id="news" aria-labelledby="news-h">
+    <div class="side">
+      <div class="num">00</div>
+      <h2 id="news-h">News</h2>
+    </div>
+    <div class="content">
+      <ul class="news">
+        <li><time>Dec 2026</time><div>Our invited paper on prefix-free ISI-aware character encoding will be presented at <strong>IEEE ANTS 2026</strong>, IIT Roorkee.</div></li>
+        <li><time>2026</time><div>Joined the <strong>Central Research Laboratory, Bharat Electronics Limited</strong>, Bangalore as Member Research Staff.</div></li>
+        <li><time>Jun 2026</time><div>Started as Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta, on constellation shaping and MIMO precoding.</div></li>
+        <li><time>Feb 2026</time><div>Paper on ISI-aware selective variable-length coding presented at <strong>NCC 2026</strong>.</div></li>
+        <li><time>Dec 2025</time><div>“ISI-aware code design: A linear approach toward reliable molecular communication” published in <em>IEEE TMBMC</em>.</div></li>
+        <li><time>Jun 2025</time><div>Paper on (α, β)-constrained high-rate codes presented at <strong>IEEE ISIT 2025</strong>.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== RESEARCH ===================== -->
+  <section class="block" id="research" aria-labelledby="research-h">
+    <div class="side">
+      <div class="num">01</div>
+      <h2 id="research-h">Research</h2>
+      <p class="sub">Molecular communication, ISI-aware coding, adversarial nodes, constellation shaping.</p>
+    </div>
+    <div class="content">
+      <div class="chips" aria-label="Research interests">
+        <span>Molecular communication</span><span>Error-control coding</span><span>Inter-symbol interference</span><span>Run-length-limited codes</span><span>Probabilistic constellation shaping</span><span>MIMO precoding</span>
+      </div>
+
+      <h3>Molecular communication in brief</h3>
+      <p>In molecular communication (MC), molecules carry the information in place of electromagnetic waves. A transmitter releases molecules into a fluid. The molecules move by diffusion, and a receiver counts the molecules that reach it. This suits very small devices such as nanomachines inside the body, where radio antennas do not work well. Possible applications are targeted drug delivery, health monitoring inside the body and lab-on-chip systems.</p>
+      <p>In my work, I consider molecular communication via diffusion (MCvD) with on–off keying. The transmitter releases a fixed number of molecules for bit-1 and releases nothing for bit-0. The receiver compares the count in each bit interval with a threshold.</p>
+
+      <h3>The ISI problem</h3>
+      <p>Diffusion is slow and random. Only a part of the molecules released in one bit interval reach the receiver in the same interval. The rest arrive in the next few intervals and add to their counts. This is inter-symbol interference (ISI). The channel response has a long tail, as shown below. So, when two bit-1s are sent close together, the second one sees a large extra count, and a bit-0 after a bit-1 can be read as bit-1.</p>
+      <figure class="diagram">
+        <svg id="cir" viewBox="0 0 640 230" role="img" aria-label="Channel impulse response of a diffusion channel over five bit intervals. Most of the response falls in the first interval, and a long tail spreads into the next four intervals, which causes ISI."></svg>
+        <figcaption>Response of a diffusion channel to one release at <span class="mono">t = 0</span>, for five bit intervals of length <span class="mono">T</span>. The tail after the first interval is the ISI seen by the next bits.</figcaption>
+      </figure>
+      <p>Equalisers used in radio receivers are often too complex for a nanomachine. So I look for simple codes that avoid harmful bit patterns at the transmitter itself.</p>
+
+      <h3>Coding against ISI <span class="sec-tag">Ph.D.</span></h3>
+      <p>A channel code adds controlled redundancy to the data. The minimum Hamming distance <span class="formula">d<sub>min</sub></span> between codewords decides how many bit errors the code can correct: <span class="formula">t = ⌊(d<sub>min</sub> − 1)/2⌋</span>. In MC, a good code must also control <em>where</em> the 1s appear, because the channel has memory. So the design has two goals at the same time: distance against noise, and spacing of 1s against ISI.</p>
+
+      <h4>Zero-padding and run-length constraints</h4>
+      <p>A simple idea is to place zeros after every 1. A binary sequence satisfies the <span class="formula">(d, ∞)</span> run-length-limited (RLL) constraint when every 1 is followed by at least <span class="formula">d</span> zeros. The molecules from a bit-1 then get time to clear before the next bit-1 is sent. We call such codes zero-padding (ZP) codes.</p>
+      <div class="codebox">
+        <div class="row"><span class="lbl">Uncoded data</span>
+          <span class="bits"><b class="one">1</b><b class="one">1</b><b>0</b><b class="one">1</b><b class="one">1</b><b class="one">1</b></span>
+          <span>1s back to back: high ISI</span></div>
+        <div class="row"><span class="lbl">ZP sequence, d = 2</span>
+          <span class="bits"><b class="one">1</b><b>0</b><b>0</b><i class="gap"></i><b class="one">1</b><b>0</b><b>0</b><b>0</b><i class="gap"></i><b class="one">1</b><b>0</b><b>0</b></span>
+          <span>every 1 has two 0s after it</span></div>
+      </div>
+
+      <h4>ISI-reducing error-correcting codes</h4>
+      <p>Zero-padding lowers the ISI, but it does not correct errors due to noise. We designed codes that keep the ZP structure and also correct a single bit error <a href="#j1">[J1]</a>. After that, we gave a linear approach to ISI-aware code design <a href="#j2">[J2]</a> and a family of high-rate codes under (α, β) constraints <a href="#c4">[C4]</a>. Earlier, we studied how the distribution of the transmitted sequence changes the ISI <a href="#c1">[C1]</a>, and proposed ISI-reducing channel codes for MCvD <a href="#c3">[C3]</a>.</p>
+
+      <h4>Variable-length character encoding</h4>
+      <p>When text is sent, letters do not occur with equal probability. Huffman codes give short codewords to common letters, but they do not correct errors and they do not keep the 1s apart. We designed prefix-free, variable-length codes that keep the ZP constraint, and a version with free distance 3 that corrects a single bit error. A two-stage decoder first does guaranteed single-error correction and then uses prefix-guided backtracking to recover more patterns <a href="#c6">[C6]</a>. A related scheme selects variable-length codewords for a channel with refresh <a href="#c5">[C5]</a>.</p>
+
+      <h3>Adversarial nodes in cooperative networks <span class="sec-tag">M.Tech</span></h3>
+      <p>In a cooperative MCvD network, several relay nanomachines detect the transmitted bit and report to a fusion centre (FC). The FC combines the reports with an <span class="formula">F</span>-out-of-<span class="formula">N</span> rule. The OR, AND and majority rules are special cases. Some relays can be faulty or adversarial. They may almost always report bit-1, almost never report bit-1, or behave somewhere in between.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 640 238" role="img" aria-label="Cooperative network: one transmitter sends to five relays. Two relays are adversarial. All relays report to a fusion centre, which filters extreme values and then applies an F-out-of-N rule.">
+          <g font-family="JetBrains Mono, monospace" font-size="12">
+            <!-- links Tx -> relays -->
+            <g stroke="var(--line)" stroke-width="1.5">
+              <line x1="78" y1="110" x2="270" y2="34"/><line x1="78" y1="110" x2="270" y2="72"/>
+              <line x1="78" y1="110" x2="270" y2="110"/><line x1="78" y1="110" x2="270" y2="148"/>
+              <line x1="78" y1="110" x2="270" y2="186"/>
+            </g>
+            <g stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 4">
+              <line x1="290" y1="34" x2="470" y2="110"/><line x1="290" y1="110" x2="470" y2="110"/>
+              <line x1="290" y1="186" x2="470" y2="110"/>
+            </g>
+            <g stroke="var(--signal)" stroke-width="1.5" stroke-dasharray="4 4">
+              <line x1="290" y1="72" x2="470" y2="110"/><line x1="290" y1="148" x2="470" y2="110"/>
+            </g>
+            <!-- Tx -->
+            <circle cx="62" cy="110" r="22" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="2"/>
+            <text x="62" y="114" text-anchor="middle" fill="var(--ink)">Tx</text>
+            <!-- relays -->
+            <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="2">
+              <circle cx="280" cy="34" r="12"/><circle cx="280" cy="110" r="12"/><circle cx="280" cy="186" r="12"/>
+            </g>
+            <g fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="2">
+              <rect x="268" y="60" width="24" height="24" rx="3"/><rect x="268" y="136" width="24" height="24" rx="3"/>
+            </g>
+            <circle cx="40" cy="224" r="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="52" y="228" fill="var(--muted)" font-size="11">healthy relay</text>
+            <rect x="160" y="218" width="12" height="12" rx="2" fill="var(--signal-soft)" stroke="var(--signal)" stroke-width="1.5"/>
+            <text x="180" y="228" fill="var(--muted)" font-size="11">adversarial relay</text>
+            <!-- FC -->
+            <rect x="470" y="78" width="140" height="64" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/>
+            <text x="540" y="102" text-anchor="middle" fill="var(--ink)" font-weight="600">Fusion centre</text>
+            <text x="540" y="120" text-anchor="middle" fill="var(--muted)" font-size="11">filter, then</text>
+            <text x="540" y="134" text-anchor="middle" fill="var(--muted)" font-size="11">F-out-of-N rule</text>
+          </g>
+        </svg>
+        <figcaption>A transmitter, five relays (two adversarial) and a fusion centre. The FC removes extreme reports before it applies the fusion rule.</figcaption>
+      </figure>
+      <p>In my M.Tech thesis, I studied the effect of such relays on the bit error rate (BER) and designed filtering algorithms at the FC. The algorithms remove the lower and the upper extreme values in every interval before fusion, and they do not need pilot symbols <a href="#c2">[C2]</a>, <a href="#r1">[R1]</a>.</p>
+
+      <h3>Constellation shaping and MIMO precoding <span class="sec-tag">Wireless</span></h3>
+      <p>In probabilistic constellation shaping (PCS), low-energy symbols are sent more often than high-energy symbols. This brings the rate closer to the channel capacity at the same average power. The Maxwell–Boltzmann distribution is the usual choice. I studied the optimal symbol distribution for ASK constellations and where it differs from Maxwell–Boltzmann. I also worked on joint power allocation, shaping and precoder design for MIMO channels with SVD and GMD precoders, and on hybrid probabilistic and geometric shaping.</p>
+      <p class="note">This was part of a joint research project between IIT Kanpur and InterDigital, USA (Oct 2025 – Nov 2026).</p>
+    </div>
+  </section>
+
+  <!-- ===================== PUBLICATIONS ===================== -->
+  <section class="block" id="publications" aria-labelledby="pubs-h">
+    <div class="side">
+      <div class="num">02</div>
+      <h2 id="pubs-h">Publications</h2>
+      <p class="sub">Journal papers, conference papers and work under review.</p>
+    </div>
+    <div class="content">
+      <h3>Journal papers</h3>
+      <ol class="pubs">
+        <li id="j2"><span class="id">J2</span><div>
+          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+          “<span class="t">ISI-aware code design: A linear approach toward reliable molecular communication</span>,”
+          <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, vol. 11, no. 4, pp. 549–571, Dec. 2025.</span></div></li>
+        <li id="j1"><span class="id">J1</span><div>
+          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+          “<span class="t">On designing novel ISI-reducing single error correcting codes in an MCvD system</span>,”
+          <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, vol. 11, no. 2, pp. 228–233, Jun. 2025.</span></div></li>
+      </ol>
+
+      <h3>Conference papers</h3>
+      <ol class="pubs">
+        <li id="c6"><span class="id">C6</span><div>
+          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+          “<span class="t">Designing prefix-free ISI-aware character encoding for diffusion-based molecular communication</span>,”
+          <span class="venue">in <em>Proc. IEEE International Conference on Advanced Networks and Telecommunications Systems (ANTS)</em>, Dec. 2026.</span><span class="badge">Invited</span></div></li>
+        <li id="c5"><span class="id">C5</span><div>
+          <span class="me">T. Nath</span> and A. Banerjee,
+          “<span class="t">ISI-aware selective variable-length coding for diffusion-based molecular communication channel with refresh</span>,”
+          <span class="venue">in <em>Proc. National Conference on Communications (NCC)</em>, Feb. 2026, pp. 13–18.</span></div></li>
+        <li id="c4"><span class="id">C4</span><div>
+          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+          “<span class="t">Improved performance with α, β-constrained transmission: A family of high-rate codes 𝒞<sup>(n)</sup><sub>α,β</sub> for molecular communication via diffusion</span>,”
+          <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, Jun. 2025.</span></div></li>
+        <li id="c3"><span class="id">C3</span><div>
+          <span class="me">T. Nath</span> and A. Banerjee,
+          “<span class="t">On novel ISI-reducing channel codes for molecular communication via diffusion</span>,”
+          <span class="venue">in <em>Proc. IEEE International Symposium on Information Theory (ISIT)</em>, 2023.</span></div></li>
+        <li id="c2"><span class="id">C2</span><div>
+          <span class="me">T. Nath</span> and A. Banerjee,
+          “<span class="t">On effect of adversaries in a cooperative MCvD network and filtering mechanism</span>,”
+          <span class="venue">in <em>Proc. IEEE Wireless Communications and Networking Conference (WCNC)</em>, 2023.</span></div></li>
+        <li id="c1"><span class="id">C1</span><div>
+          <span class="me">T. Nath</span>, K. G. Benerjee, and A. Banerjee,
+          “<span class="t">On effect of different sequence distributions on ISI in an MCvD system</span>,”
+          <span class="venue">in <em>Proc. International Conference on Signal Processing and Communications (SPCOM)</em>, 2022.</span></div></li>
+      </ol>
+
+      <h3>Under review</h3>
+      <ol class="pubs">
+        <li id="r1"><span class="id">R1</span><div>
+          <span class="me">T. Nath</span> <i>et al.</i>,
+          “<span class="t">On modelling and mitigating adversarial impacts in a cooperative MCvD network</span>,”
+          <span class="venue"><em>IEEE Transactions on Molecular, Biological, and Multi-Scale Communications</em>, under revision.</span><span class="badge teal">Revision</span></div></li>
+      </ol>
+      <!-- Add Google Scholar / ORCID links here when ready, e.g.
+      <p class="note">Full list on <a href="https://scholar.google.com/citations?user=YOUR_ID">Google Scholar</a>.</p> -->
+    </div>
+  </section>
+
+  <!-- ===================== EXPERIENCE ===================== -->
+  <section class="block" id="experience" aria-labelledby="exp-h">
+    <div class="side">
+      <div class="num">03</div>
+      <h2 id="exp-h">Experience</h2>
+    </div>
+    <div class="content">
+      <ol class="tl">
+        <li class="now">
+          <div class="when">2026 – Present</div>
+          <h4>Member Research Staff (Grade E-II)</h4>
+          <div class="where">Central Research Laboratory (CRL), Bharat Electronics Limited (BEL), Bangalore</div>
+        </li>
+        <li>
+          <div class="when">Jun 2026 – Nov 2026</div>
+          <h4>Senior Project Scientist</h4>
+          <div class="where">Department of Electrical Engineering, IIT Kanpur · with Prof. Abhishek K. Gupta</div>
+          <ul>
+            <li>Probabilistic constellation shaping and MIMO precoder design, in a joint research project between IIT Kanpur and InterDigital, USA (Oct 2025 – Nov 2026).</li>
+            <li>Collaborators: Ankit Tiwari, Prof. Abhishek K. Gupta and Prof. Ketan Rajawat (IIT Kanpur), Allan Tsai and Ravi Pragada (InterDigital).</li>
+          </ul>
+        </li>
+        <li>
+          <div class="when">2018 – 2026</div>
+          <h4>Research Scholar</h4>
+          <div class="where">Department of Electrical Engineering, IIT Kanpur · with Prof. Adrish Banerjee</div>
+          <ul>
+            <li>Channel codes for molecular communication via diffusion; adversarial nodes in cooperative MCvD networks.</li>
+            <li>Teaching support for EE912E Detection and Estimation Theory (eMasters in Communication Systems).</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== EDUCATION ===================== -->
+  <section class="block" id="education" aria-labelledby="edu-h">
+    <div class="side">
+      <div class="num">04</div>
+      <h2 id="edu-h">Education</h2>
+    </div>
+    <div class="content">
+      <ol class="tl">
+        <li>
+          <div class="when">2018 – 2026</div>
+          <h4>M.Tech and Ph.D. (dual degree), Electrical Engineering</h4>
+          <div class="where">Indian Institute of Technology Kanpur · Supervisor: Prof. Adrish Banerjee</div>
+          <ul>
+            <li><strong>Ph.D. topic:</strong> ISI-aware channel codes for molecular communication via diffusion.</li>
+            <li><strong>M.Tech thesis:</strong> “On Designing Filtering Algorithms in a Cooperative MCvD System with Adversaries” (defended March 2024).</li>
+          </ul>
+        </li>
+        <!-- Add your Bachelor's degree here:
+        <li>
+          <div class="when">YYYY – 2018</div>
+          <h4>B.Tech / B.E., Branch name</h4>
+          <div class="where">Institute name</div>
+        </li>
+        -->
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== HONOURS ===================== -->
+  <section class="block" id="honours" aria-labelledby="hon-h">
+    <div class="side">
+      <div class="num">05</div>
+      <h2 id="hon-h">Honours &amp; service</h2>
+    </div>
+    <div class="content">
+      <ul class="honours">
+        <li><span class="yr">2026</span><span>Invited paper at IEEE ANTS 2026.</span></li>
+        <li><span class="yr">2024</span><span>One of the top four finalists of the Bits and Bots competition at IEEE ISIT 2024, as part of a team from IIT Kanpur.</span></li>
+        <li><span class="yr">—</span><span>One of the finalists for the Best Student Paper Award.<!-- add conference and year --></span></li>
+        <li><span class="yr">Service</span><span>Reviewer, <em>IEEE Communications Letters</em>.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== BIOGRAPHY ===================== -->
+  <section class="block" id="biography" aria-labelledby="bio-h">
+    <div class="side">
+      <div class="num">06</div>
+      <h2 id="bio-h">Biography</h2>
+      <p class="sub">For talk announcements and session chairs. Use the copy buttons.</p>
+    </div>
+    <div class="content">
+      <div class="bio">
+        <div class="bio-head"><h4>Full biography</h4><span><button class="btn copy" type="button" data-copy="bio-long" id="copy-long">Copy</button><span class="copied" aria-live="polite"></span></span></div>
+        <div id="bio-long">
+          <p>Tamoghno Nath is a Member Research Staff at the Central Research Laboratory (CRL), Bharat Electronics Limited, Bangalore. He completed the dual-degree M.Tech and Ph.D. programme in Electrical Engineering at the Indian Institute of Technology Kanpur, under the supervision of Prof. Adrish Banerjee.</p>
+          <p>His doctoral research was on channel codes for molecular communication via diffusion. In this work, he designed codes that reduce inter-symbol interference and correct errors at the same time, including prefix-free variable-length codes for sending text. His M.Tech thesis studied adversarial relays in a cooperative molecular communication network and proposed filtering algorithms at the fusion centre.</p>
+          <p>From June to November 2026, he was a Senior Project Scientist at IIT Kanpur with Prof. Abhishek K. Gupta. There he worked on probabilistic constellation shaping and MIMO precoding in a joint project with InterDigital, USA. His papers have appeared in the IEEE Transactions on Molecular, Biological, and Multi-Scale Communications, IEEE ISIT, IEEE WCNC, NCC and SPCOM. He is a reviewer for the IEEE Communications Letters.</p>
+        </div>
+      </div>
+      <div class="bio" style="margin-top:16px">
+        <div class="bio-head"><h4>Short biography</h4><span><button class="btn copy" type="button" data-copy="bio-short" id="copy-short">Copy</button><span class="copied" aria-live="polite"></span></span></div>
+        <div id="bio-short">
+          <p>Tamoghno Nath is a Member Research Staff at CRL, Bharat Electronics Limited, Bangalore. He received his M.Tech and Ph.D. in Electrical Engineering from IIT Kanpur. His research interests are molecular communication, error-control coding and constellation shaping.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section class="block" id="contact" aria-labelledby="con-h">
+    <div class="side">
+      <div class="num">07</div>
+      <h2 id="con-h">Contact</h2>
+    </div>
+    <div class="content">
+      <div class="contact-grid">
+        <div><div class="k">Email</div><div class="v"><a href="mailto:tamoghnonath@gmail.com">tamoghnonath@gmail.com</a></div></div>
+        <div><div class="k">Office</div><div class="v">Central Research Laboratory, Bharat Electronics Limited, Bangalore, India</div></div>
+        <div><div class="k">IIT Kanpur profile</div><div class="v"><a href="https://iitk.ac.in/tamoghno">iitk.ac.in/tamoghno</a></div></div>
+        <!-- Add more cards when ready, e.g.
+        <div><div class="k">Google Scholar</div><div class="v"><a href="https://scholar.google.com/citations?user=YOUR_ID">Profile</a></div></div>
+        <div><div class="k">ORCID</div><div class="v"><a href="https://orcid.org/YOUR-ORCID">YOUR-ORCID</a></div></div>
+        -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Tamoghno Nath</span>
+    <span>Last updated: November 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var root = document.documentElement;
+  function tok(name){ return getComputedStyle(root).getPropertyValue(name).trim(); }
+  var C = {};
+  function readColors(){
+    C.bg = tok("--bg"); C.surface = tok("--surface"); C.ink = tok("--ink"); C.muted = tok("--muted");
+    C.line = tok("--line"); C.accent = tok("--accent"); C.signal = tok("--signal");
+  }
+  readColors();
+  var themeListeners = [];
+  function onTheme(){ readColors(); themeListeners.forEach(function(f){ f(); }); }
+  try { new MutationObserver(onTheme).observe(root, {attributes:true, attributeFilter:["data-theme"]}); } catch(e){}
+  try { window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onTheme); } catch(e){}
+
+  function randn(){ var u=0,v=0; while(!u)u=Math.random(); while(!v)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+
+  /* ---------------- Background bit lattice ---------------- */
+  (function(){
+    var cv = document.getElementById("lattice"); if(!cv) return;
+    var ctx = cv.getContext("2d");
+    var cell = 22, cols = 0, rows = 0, grid = [], heat = [], dpr = 1;
+    function size(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.floor(innerWidth * dpr); cv.height = Math.floor(innerHeight * dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      cols = Math.ceil(innerWidth / cell); rows = Math.ceil(innerHeight / cell);
+      grid = []; heat = [];
+      for (var r=0;r<rows;r++){ for (var c=0;c<cols;c++){
+        // sparse 1s, roughly like a low-density parity-check matrix
+        grid.push(Math.random() < 0.13 ? 1 : 0); heat.push(0);
+      }}
+      drawAll();
+    }
+    function drawCell(i){
+      var c = i % cols, r = (i / cols) | 0, x = c*cell, y = r*cell;
+      ctx.clearRect(x, y, cell, cell);
+      var one = grid[i] === 1, h = heat[i];
+      ctx.globalAlpha = one ? (0.20 + 0.55*h) : 0.09;
+      ctx.fillStyle = (one && h > 0.02) ? C.signal : (one ? C.accent : C.muted);
+      ctx.fillText(one ? "1" : "0", x + cell/2, y + cell/2 + 1);
+    }
+    function drawAll(){
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      ctx.font = "11px " + (tok("--font-mono") || "monospace");
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (var i=0;i<grid.length;i++) drawCell(i);
+      ctx.globalAlpha = 1;
+    }
+    var hot = [];
+    function tick(){
+      ctx.font = "11px " + (tok("--font-mono") || "monospace");
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      // light up a short column run, like a parity check touching a few bits
+      var c = (Math.random()*cols)|0, r0 = (Math.random()*rows)|0;
+      for (var k=0;k<4;k++){
+        var r = (r0 + k*3) % rows, i = r*cols + c;
+        if (Math.random() < 0.5) grid[i] = 1 - grid[i];
+        if (grid[i] === 1){ heat[i] = 1; hot.push(i); } else drawCell(i);
+      }
+      var next = [];
+      for (var j=0;j<hot.length;j++){
+        var id = hot[j]; heat[id] *= 0.88;
+        if (heat[id] < 0.02){ heat[id] = 0; }
+        else next.push(id);
+        drawCell(id);
+      }
+      hot = next; ctx.globalAlpha = 1;
+    }
+    size();
+    var rt; addEventListener("resize", function(){ clearTimeout(rt); rt = setTimeout(size, 150); });
+    themeListeners.push(drawAll);
+    if (!reduce) setInterval(tick, 140);
+  })();
+
+  /* ---------------- Hero: live diffusion channel ---------------- */
+  (function(){
+    var cv = document.getElementById("mc-canvas"); if(!cv) return;
+    var ctx = cv.getContext("2d");
+    var W = 0, H = 0, dpr = 1;
+    var NS = 14;                // slots shown
+    var slotDur = 0.9;         // seconds per bit interval
+    var Nrel = 130;             // molecules per bit-1
+    var parts = [], bits = [], counts = [], slot = 0, tSlot = 0, flash = 0;
+    var D = 2;                  // (d, inf) constraint: at least D zeros after each 1
+    var zerosLeft = 0;
+
+    function nextBit(){
+      if (zerosLeft > 0){ zerosLeft--; return 0; }
+      var b = Math.random() < 0.55 ? 1 : 0;
+      if (b === 1) zerosLeft = D;
+      return b;
+    }
+    function geom(){
+      return {
+        bitsY: 6, bitsH: 24,
+        chTop: 48, chBot: H - 98,
+        barTop: H - 82, barBot: H - 16,
+        xTx: Math.max(36, W*0.08), xRx: W*0.9
+      };
+    }
+    function size(){
+      var rect = cv.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = rect.width; H = rect.height;
+      cv.width = Math.floor(W*dpr); cv.height = Math.floor(H*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function startSlot(){
+      var b = nextBit();
+      bits.push(b); counts.push(0);
+      if (bits.length > NS){ bits.shift(); counts.shift(); }
+      if (b === 1){
+        var g = geom(), cy = (g.chTop + g.chBot)/2;
+        for (var i=0;i<Nrel;i++) parts.push({x:g.xTx + 14 + Math.random()*4, y:cy + randn()*6});
+        flash = 1;
+      }
+    }
+    function step(dt){
+      var g = geom(), L = g.xRx - g.xTx;
+      var v = L / (1.15*slotDur);            // mild flow towards the receiver
+      var sig = 0.40 * L / Math.sqrt(slotDur); // diffusion strength
+      var s = sig*Math.sqrt(dt);
+      var keep = [];
+      for (var i=0;i<parts.length;i++){
+        var p = parts[i];
+        p.x += v*dt + s*randn();
+        p.y += 0.6*s*randn();
+        if (p.y < g.chTop+3) p.y = 2*(g.chTop+3) - p.y;
+        if (p.y > g.chBot-3) p.y = 2*(g.chBot-3) - p.y;
+        if (p.x < g.xTx + 10) p.x = 2*(g.xTx+10) - p.x;
+        if (p.x >= g.xRx - 6){ counts[counts.length-1]++; continue; } // absorbed
+        keep.push(p);
+      }
+      parts = keep;
+      tSlot += dt;
+      if (tSlot >= slotDur){ tSlot -= slotDur; slot++; startSlot(); }
+      flash *= Math.pow(0.02, dt);
+    }
+    function draw(){
+      var g = geom();
+      ctx.clearRect(0,0,W,H);
+      var colW = (W - 8) / NS;
+      // bit strip
+      ctx.font = "600 12px " + (tok("--font-mono") || "monospace");
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      var off = NS - bits.length;
+      for (var k=0;k<bits.length;k++){
+        var x = 4 + (k+off)*colW, cur = (k === bits.length-1);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = bits[k] ? C.signal : C.line;
+        ctx.globalAlpha = bits[k] ? (cur ? 1 : 0.85) : (cur ? 0.9 : 0.55);
+        roundRect(x+3, g.bitsY, colW-6, g.bitsH, 4); ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = bits[k] ? C.surface : C.muted;
+        ctx.fillText(String(bits[k]), x + colW/2, g.bitsY + g.bitsH/2 + 1);
+        if (cur){
+          ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+          roundRect(x+1.5, g.bitsY-1.5, colW-3, g.bitsH+3, 5); ctx.stroke();
+        }
+      }
+      // channel walls (a vessel)
+      ctx.strokeStyle = C.line; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(g.xTx-20, g.chTop); ctx.lineTo(W-4, g.chTop); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(g.xTx-20, g.chBot); ctx.lineTo(W-4, g.chBot); ctx.stroke();
+      // Tx
+      var cy = (g.chTop + g.chBot)/2;
+      ctx.globalAlpha = 0.18 + 0.5*flash; ctx.fillStyle = C.signal;
+      ctx.beginPath(); ctx.arc(g.xTx, cy, 16 + 8*flash, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.strokeStyle = C.signal; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(g.xTx, cy, 14, 0, Math.PI*2); ctx.stroke();
+      ctx.fillStyle = C.ink; ctx.font = "600 11px " + (tok("--font-mono") || "monospace");
+      ctx.fillText("Tx", g.xTx, cy+1);
+      // molecules
+      ctx.fillStyle = C.accent; ctx.globalAlpha = 0.85;
+      for (var i=0;i<parts.length;i++){ ctx.beginPath(); ctx.arc(parts[i].x, parts[i].y, 1.9, 0, Math.PI*2); ctx.fill(); }
+      ctx.globalAlpha = 1;
+      // Rx: absorbing receiver wall with receptors
+      ctx.fillStyle = C.accent; ctx.globalAlpha = 0.16;
+      ctx.fillRect(g.xRx-6, g.chTop+1, W-4-(g.xRx-6), g.chBot-g.chTop-2);
+      ctx.globalAlpha = 1; ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(g.xRx-6, g.chTop); ctx.lineTo(g.xRx-6, g.chBot); ctx.stroke();
+      for (var yy = g.chTop+8; yy < g.chBot-4; yy += 10){
+        ctx.beginPath(); ctx.moveTo(g.xRx-6, yy); ctx.lineTo(g.xRx-12, yy-3); ctx.moveTo(g.xRx-6, yy); ctx.lineTo(g.xRx-12, yy+3); ctx.stroke();
+      }
+      ctx.fillStyle = C.ink; ctx.textAlign = "center";
+      ctx.fillText("Rx", (g.xRx + W - 4)/2, cy+1);
+      // count bars
+      var maxC = Nrel * 0.75;
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(4, g.barBot+0.5); ctx.lineTo(W-4, g.barBot+0.5); ctx.stroke();
+      for (var m=0;m<counts.length;m++){
+        var bx = 4 + (m+off)*colW, h = Math.min(1, counts[m]/maxC) * (g.barBot - g.barTop);
+        ctx.fillStyle = bits[m] ? C.accent : C.muted;
+        ctx.globalAlpha = bits[m] ? 0.9 : 0.6;
+        ctx.fillRect(bx + colW*0.22, g.barBot - h, colW*0.56, h);
+        ctx.globalAlpha = 1;
+        if (!bits[m] && counts[m] > 2 && m < counts.length-1){
+          ctx.fillStyle = C.signal; ctx.font = "600 9px " + (tok("--font-mono") || "monospace");
+          ctx.fillText("ISI", bx + colW/2, g.barBot - h - 7);
+        }
+      }
+      // threshold
+      var thY = g.barBot - (Nrel*0.28/maxC)*(g.barBot-g.barTop);
+      ctx.setLineDash([4,4]); ctx.strokeStyle = C.signal; ctx.globalAlpha = 0.7;
+      ctx.beginPath(); ctx.moveTo(4, thY); ctx.lineTo(W-4, thY); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+      ctx.textAlign = "left"; ctx.fillStyle = C.muted; ctx.font = "10px " + (tok("--font-mono") || "monospace");
+      ctx.fillText("count / interval", 6, g.barTop - 4);
+      var tx0 = 6 + ctx.measureText("count / interval").width + 16;
+      ctx.setLineDash([4,4]); ctx.strokeStyle = C.signal; ctx.globalAlpha = 0.8;
+      ctx.beginPath(); ctx.moveTo(tx0, g.barTop - 7); ctx.lineTo(tx0 + 18, g.barTop - 7); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+      ctx.fillText("threshold", tx0 + 24, g.barTop - 4);
+      ctx.textAlign = "center";
+    }
+    function roundRect(x,y,w,h,r){
+      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+      ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+      ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+    }
+
+    size();
+    // warm up so the first frame already shows a full picture
+    startSlot();
+    for (var w=0; w< NS*slotDur/ (1/60); w++) step(1/60);
+    draw();
+    var ro; try { ro = new ResizeObserver(function(){ size(); draw(); }); ro.observe(cv); } catch(e){ addEventListener("resize", function(){ size(); draw(); }); }
+    themeListeners.push(draw);
+
+    if (!reduce){
+      var last = performance.now(), visible = true;
+      try { new IntersectionObserver(function(es){ visible = es[0].isIntersecting; }).observe(cv); } catch(e){}
+      (function loop(now){
+        var dt = Math.min(0.05, (now - last)/1000); last = now;
+        if (visible && !document.hidden){ step(dt); draw(); }
+        requestAnimationFrame(loop);
+      })(last);
+    }
+  })();
+
+  /* ---------------- Channel impulse response figure ---------------- */
+  (function(){
+    var svg = document.getElementById("cir"); if(!svg) return;
+    var NS = "http://www.w3.org/2000/svg";
+    var x0 = 50, x1 = 620, y0 = 190, yTop = 20, slots = 5;
+    var T = 1, a = 0.18;            // h(t) ~ t^(-3/2) exp(-a/t)
+    function h(t){ return t<=0 ? 0 : Math.pow(t,-1.5)*Math.exp(-a/t); }
+    var tp = 2*a/3, hmax = h(tp);
+    function X(t){ return x0 + (x1-x0)*t/(slots*T); }
+    function Y(v){ return y0 - (y0-yTop)*v/hmax*0.92; }
+    function el(n, at, txt){ var e = document.createElementNS(NS, n); for (var k in at) e.setAttribute(k, at[k]); if (txt) e.textContent = txt; svg.appendChild(e); return e; }
+    // shaded areas per slot
+    for (var s=0;s<slots;s++){
+      var d = "M" + X(s*T) + "," + y0;
+      for (var i=0;i<=60;i++){ var t = s*T + T*i/60; d += " L" + X(t).toFixed(1) + "," + Y(h(t)).toFixed(1); }
+      d += " L" + X((s+1)*T) + "," + y0 + " Z";
+      el("path", {d:d, fill: s===0 ? "var(--accent)" : "var(--signal)", "fill-opacity": s===0 ? 0.22 : 0.18});
+    }
+    // curve
+    var dc = "";
+    for (var j=0;j<=400;j++){ var tt = slots*T*j/400; dc += (j? " L":"M") + X(tt).toFixed(1) + "," + Y(h(tt)).toFixed(1); }
+    el("path", {d:dc, fill:"none", stroke:"var(--accent)", "stroke-width":2.2});
+    // slot boundaries
+    for (var b=0;b<=slots;b++){
+      el("line", {x1:X(b*T), y1:yTop-6, x2:X(b*T), y2:y0, stroke:"var(--line)", "stroke-width":1, "stroke-dasharray": b? "3 4":"0"});
+      el("text", {x:X(b*T), y:y0+18, "text-anchor":"middle", fill:"var(--muted)", "font-size":12, "font-family":"JetBrains Mono, monospace"}, b===0 ? "0" : (b===1 ? "T" : b+"T"));
+    }
+    el("line", {x1:x0, y1:y0, x2:x1+6, y2:y0, stroke:"var(--muted)", "stroke-width":1.2});
+    el("text", {x:x1+10, y:y0+4, "text-anchor":"start", fill:"var(--muted)", "font-size":12, "font-family":"JetBrains Mono, monospace"}, "t");
+    el("text", {x:x0-8, y:yTop+4, "text-anchor":"end", fill:"var(--muted)", "font-size":12, "font-family":"JetBrains Mono, monospace"}, "h(t)");
+    el("text", {x:(X(0)+X(T))/2, y:Y(hmax)-8 < yTop ? yTop+6 : Y(hmax*0.55), "text-anchor":"start", dx:22, fill:"var(--accent)", "font-size":12, "font-weight":600, "font-family":"IBM Plex Sans, sans-serif"}, "current bit");
+    el("text", {x:(X(T)+X(4*T))/2, y:Y(h(1.6*T))-26, "text-anchor":"middle", fill:"var(--signal)", "font-size":12, "font-weight":600, "font-family":"IBM Plex Sans, sans-serif"}, "ISI on the next bits");
+    el("path", {d:"M" + ((X(T)+X(4*T))/2) + "," + (Y(h(1.6*T))-20) + " L" + X(1.6*T) + "," + (Y(h(1.6*T))-4), stroke:"var(--signal)", "stroke-width":1.2, fill:"none"});
+  })();
+
+  /* ---------------- Copy biography ---------------- */
+  document.querySelectorAll("button[data-copy]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var src = document.getElementById(btn.getAttribute("data-copy"));
+      var text = Array.prototype.map.call(src.querySelectorAll("p"), function(p){ return p.textContent.trim(); }).join("\n\n");
+      var note = btn.parentNode.querySelector(".copied");
+      function done(msg){ note.textContent = msg; setTimeout(function(){ note.textContent = ""; }, 2200); }
+      try {
+        navigator.clipboard.writeText(text).then(function(){ done("Copied"); }, function(){ done("Select the text to copy"); });
+      } catch(e){ done("Select the text to copy"); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
